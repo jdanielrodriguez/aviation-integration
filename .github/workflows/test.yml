@@ -1,0 +1,74 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Crear archivo .env
+        run: |
+          cat <<EOF > .env
+          NODE_ENV=test
+          PORT=8080
+          AVIATIONSTACK_KEY=${{ secrets.AVIATIONSTACK_KEY }}
+          MYSQL_HOST=aviation_db
+          MYSQL_PORT=3306
+          MYSQL_USER=aviation
+          MYSQL_PASSWORD=aviation1234
+          MYSQL_DATABASE=aviation-integration
+          REDIS_HOST=aviation_redis
+          REDIS_PORT=6379
+          MAIL_HOST=aviation_mailhog
+          MAIL_PORT=1025
+          EOF
+
+      - name: Limpiar volúmenes MySQL
+        run: docker volume rm aviation_db_data || true && docker volume ls
+
+      - name: Levantar stack de desarrollo con Makefile
+        run: make init
+
+      - name: Esperar healthcheck aviation_node
+        run: |
+          for i in {1..30}; do
+            health=$(docker inspect --format='{{.State.Health.Status}}' aviation_node)
+            if [ "$health" = "healthy" ]; then
+              echo "Node API healthy"
+              break
+            fi
+            echo "Waiting for health..."
+            sleep 2
+          done
+
+      - name: Run tests dentro del contenedor
+        run: make test
+
+      - name: Detener stack de desarrollo con Makefile
+        run: make stop-dev
+      
+      - name: Mostrar logs de aviation_node si falla
+        if: failure()
+        run: docker logs aviation_node || true
+
+      - name: Limpiar contenedores en caso de fallo
+        if: failure()
+        run: make stop-dev
+

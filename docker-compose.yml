@@ -1,0 +1,105 @@
+services:
+  aviation_node:
+    container_name: aviation_node
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        NODE_ENV: development
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - FAST_REFRESH=true
+    volumes:
+      - ./:/app:delegated
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+    depends_on:
+      aviation_db:
+        condition: service_healthy
+      aviation_redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8080"]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+    networks:
+      aviation_network:
+        ipv4_address: 172.18.0.2
+
+  aviation_db:
+    image: mysql:8.0
+    container_name: aviation_db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: aviation-integration
+      MYSQL_ROOT_PASSWORD: aviation1234
+      MYSQL_USER: aviation
+      MYSQL_PASSWORD: aviation1234
+    ports:
+      - "33060:3306"
+    volumes:
+      - aviation_db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "aviation", "-paviation1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    networks:
+      aviation_network:
+        ipv4_address: 172.18.0.3
+
+  aviation_phpmyadmin:
+    container_name: aviation_phpmyadmin
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=aviation_db
+      - PMA_USER=aviation
+      - PMA_PASSWORD=aviation1234
+    depends_on:
+      - aviation_db
+    networks:
+      aviation_network:
+        ipv4_address: 172.18.0.4
+
+  aviation_redis:
+    container_name: aviation_redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - aviation_redis_data:/data
+    networks:
+      aviation_network:
+        ipv4_address: 172.18.0.5
+
+  aviation_mailhog:
+    image: mailhog/mailhog
+    container_name: aviation_mailhog
+    logging:
+      driver: "none"
+    ports:
+      - "8025:8025"
+    networks:
+      aviation_network:
+        ipv4_address: 172.18.0.6
+
+volumes:
+  aviation_db_data:
+    external: true
+  aviation_redis_data:
+    external: true
+
+networks:
+  aviation_network:
+    external: true
+    name: aviation_network

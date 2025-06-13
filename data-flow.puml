@@ -1,0 +1,11 @@
+@startuml AviationStackMiddleware
+actor Usuario
+Usuario -> API : Solicita vuelos
+API -> Controller : Recibe petición
+Controller -> Service : Valida y procesa
+Service -> AviationStack : Llama API externa
+Service -> MySQL : Guarda registro
+Service -> Redis : Verifica cache
+Service -> Mailer : Envía notificación (opcional)
+Controller -> API : Responde al usuario
+@enduml
