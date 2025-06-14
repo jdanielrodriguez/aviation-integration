@@ -60,3 +60,28 @@ test:
 	@echo "Corriendo pruebas dentro del contenedor aviation_node..."
 	docker exec -e NODE_ENV=test aviation_node npm test
 
+.PHONY: deploy
+deploy:
+	@echo "Autenticando y desplegando en Google Cloud Run..."
+	gcloud auth activate-service-account --key-file gcp-key.json
+	gcloud config set project aviation-integration
+	gcloud builds submit --tag gcr.io/aviation-integration/aviation-integration
+	gcloud run deploy aviation-integration \
+		--image gcr.io/aviation-integration/aviation-integration \
+		--region us-central1 \
+		--platform managed \
+		--allow-unauthenticated
+
+.PHONY: db-stop
+db-stop:
+	@echo "Autenticando cuenta de servicio y apagando instancia Cloud SQL..."
+	gcloud auth activate-service-account --key-file=gcp-key.json
+	gcloud config set project aviation-integration
+	gcloud sql instances patch aviation-integration --activation-policy=NEVER
+
+.PHONY: db-start
+db-start:
+	@echo "Autenticando cuenta de servicio y encendiendo instancia Cloud SQL..."
+	gcloud auth activate-service-account --key-file=gcp-key.json
+	gcloud config set project aviation-integration
+	gcloud sql instances patch aviation-integration --activation-policy=ALWAYS
