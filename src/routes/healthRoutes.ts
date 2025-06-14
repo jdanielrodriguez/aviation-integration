@@ -57,4 +57,75 @@ router.get('/', async (_req, res) => {
    res.status(health.services.mysql === 'ok' && health.services.redis === 'ok' && health.services.mailer === 'ok' ? 200 : 500).json(health);
 });
 
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     summary: Verifica el estado de los servicios principales
+ *     description: Retorna información de estado (health) para MySQL, Redis y Mailer, además de uptime y versión de Node.js.
+ *     tags:
+ *       - Health
+ *     responses:
+ *       200:
+ *         description: Todos los servicios funcionan correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2024-06-14T07:22:23.982Z"
+ *                 uptime:
+ *                   type: number
+ *                   example: 1234.567
+ *                 node_version:
+ *                   type: string
+ *                   example: "v20.12.2"
+ *                 services:
+ *                   type: object
+ *                   properties:
+ *                     mysql:
+ *                       type: string
+ *                       example: ok
+ *                     redis:
+ *                       type: string
+ *                       example: ok
+ *                     mailer:
+ *                       type: string
+ *                       example: ok
+ *       500:
+ *         description: Algún servicio no está disponible o falló
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 timestamp:
+ *                   type: string
+ *                 uptime:
+ *                   type: number
+ *                 node_version:
+ *                   type: string
+ *                 services:
+ *                   type: object
+ *                   properties:
+ *                     mysql:
+ *                       type: string
+ *                       example: fail
+ *                     redis:
+ *                       type: string
+ *                       example: ok
+ *                     mailer:
+ *                       type: string
+ *                       example: ok
+ */
+
 export default router;

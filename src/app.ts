@@ -1,8 +1,12 @@
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
 import { createClient } from 'redis';
+import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express'
+import rateLimit from 'express-rate-limit';
 import { createTransport } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { requestLogger } from './middleware/requestLogger';
@@ -10,11 +14,9 @@ import { errorHandler } from './middleware/errorHandler';
 import airportRoutes from './routes/airportRoutes';
 import flightRoutes from './routes/flightRoutes';
 import healthRoutes from './routes/healthRoutes';
+import swaggerSpec from './config/swagger';
 import { config } from './config/api';
-import logger from './config/logger';
-import fs from 'fs';
-import path from 'path';
-import cookieParser from 'cookie-parser';
+import logger from './config/logger';;
 
 const app = express();
 
@@ -46,6 +48,7 @@ app.use('/api', apiLimiter);
 
 app.use(express.json());
 app.use(requestLogger);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const redisConfig: any = {
    socket: {

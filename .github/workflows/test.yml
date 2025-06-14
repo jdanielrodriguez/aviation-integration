@@ -48,7 +48,7 @@ jobs:
 
       - name: Esperar healthcheck aviation_node
         run: |
-          for i in {1..30}; do
+          for i in {1..60}; do
             health=$(docker inspect --format='{{.State.Health.Status}}' aviation_node)
             if [ "$health" = "healthy" ]; then
               echo "Node API healthy"
