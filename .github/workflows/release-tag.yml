@@ -35,12 +35,14 @@ jobs:
           fi
           echo "TAG=$tag" >> $GITHUB_ENV
 
-      - name: Create and push tag
+      - name: Create and push tag (PAT)
+        env:
+          PAT: ${{ secrets.ACTIONS_PAT }}
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git tag $TAG
-          git push origin $TAG
+          git push https://x-access-token:${PAT}@github.com/${{ github.repository }} $TAG
 
       - name: Wait for Tag push
         run: sleep 5
