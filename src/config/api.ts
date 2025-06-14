@@ -12,6 +12,7 @@ export const config = {
    NODE_ENV: process.env.NODE_ENV || 'development',
    PORT: process.env.PORT || process.env.DEFAULT_PORT || '8080',
    AVIATIONSTACK_KEY: required('AVIATIONSTACK_KEY'),
+   AVIATIONSTACK_URL: required('AVIATIONSTACK_URL') || 'http://api.aviationstack.com/v1',
    MYSQL: {
       HOST: required('MYSQL_HOST'),
       PORT: process.env.MYSQL_PORT || '3306',

@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
+import { getFlights } from '../services/aviationStackService';
+import { FlightQueryParams } from '../types/flight';
 
-export const getFlights = async (req: Request, res: Response, next: NextFunction) => {
+export const getFlightsController = async (req: Request, res: Response, next: NextFunction) => {
    try {
-      res.json({ message: 'Lista de vuelos' });
+      const data = await getFlights(req.query as FlightQueryParams);
+      res.status(200).json(data);
    } catch (error) {
       next(error);
    }

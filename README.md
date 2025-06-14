@@ -57,6 +57,7 @@ Consulta `.env.example` para la configuración necesaria.
 | NODE_ENV             | Entorno (development, production, etc) |
 | PORT                 | Puerto de la API (default: 8080)       |
 | AVIATIONSTACK_KEY    | API Key de AviationStack               |
+| AVIATIONSTACK_URL    | API URL de AviationStack               |
 | MYSQL_*              | Configuración MySQL                    |
 | REDIS_*              | Configuración Redis                    |
 | MAIL_* / GMAIL_*     | SMTP/Mailhog/Gmail para testing        |

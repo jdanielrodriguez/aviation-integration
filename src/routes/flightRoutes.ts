@@ -1,14 +1,10 @@
 import { Router } from 'express';
-import { flightsQuerySchema, validateQuery } from '../utils/flightsValidator';
-import { getFlights } from '../controllers/flightController';
+import { validateFlightQuery } from '../utils/flightsValidator';
+import { getFlightsController } from '../controllers/flightController';
 
 const router = Router();
 
-router.get(
-   '/',
-   validateQuery(flightsQuerySchema),
-   getFlights
-);
+router.get('/', validateFlightQuery, getFlightsController);
 
 /**
  * @swagger
@@ -47,25 +43,39 @@ router.get(
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   flight_number:
- *                     type: string
- *                     example: "AA123"
- *                   dep_iata:
- *                     type: string
- *                     example: "GUA"
- *                   arr_iata:
- *                     type: string
- *                     example: "JFK"
- *                   airline:
- *                     type: string
- *                     example: "American Airlines"
- *                   status:
- *                     type: string
- *                     example: "active"
+ *               type: object
+ *               properties:
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     limit:
+ *                       type: integer
+ *                     offset:
+ *                       type: integer
+ *                     count:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       flight_number:
+ *                         type: string
+ *                         example: "AA123"
+ *                       dep_iata:
+ *                         type: string
+ *                         example: "GUA"
+ *                       arr_iata:
+ *                         type: string
+ *                         example: "JFK"
+ *                       airline:
+ *                         type: string
+ *                         example: "American Airlines"
+ *                       status:
+ *                         type: string
+ *                         example: "active"
  *       422:
  *         description: Error de validación en los parámetros
  *         content:
@@ -82,7 +92,7 @@ router.get(
  *                     status:
  *                       type: number
  *                       example: 422
- *                     details:
+ *                     errors:
  *                       type: array
  *                       items:
  *                         type: object
