@@ -3,10 +3,10 @@ import { Flight } from '../models/flight';
 import { FlightQueryParams } from '../types/flight';
 
 /**
- * Obtiene una lista de vuelos desde la base de datos con paginación y búsqueda.
- * @param query - Parámetros de consulta para filtrar y paginar los resultados.
- * @returns Un objeto que contiene la paginación y los datos de los vuelos.
- */
+* Gets a list of flights from the database with pagination and searching.
+* @param query - Query parameters for filtering and paginating the results.
+* @returns An object containing the pagination and flight data.
+*/
 export async function getFlightsFromDb(query: FlightQueryParams) {
    const repo = AppDataSource.getRepository(Flight);
 

@@ -12,7 +12,7 @@ export const errorHandler: ErrorRequestHandler = (
    if (err instanceof SyntaxError && 'body' in err) {
       res.status(400).json({
          error: {
-            message: 'JSON inválido en el body de la petición',
+            message: 'Invalid JSON in the request body',
             status: 400
          }
       });
@@ -22,7 +22,7 @@ export const errorHandler: ErrorRequestHandler = (
    if (Array.isArray((err as any).errors)) {
       res.status(422).json({
          error: {
-            message: 'Error de validación',
+            message: 'Validation error',
             status: 422,
             details: (err as any).errors
          }
@@ -36,7 +36,7 @@ export const errorHandler: ErrorRequestHandler = (
 
    res.status(status).json({
       error: {
-         message: err.message || 'Error interno del servidor',
+         message: err.message || 'Internal Server Error',
          status,
          stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined
       }

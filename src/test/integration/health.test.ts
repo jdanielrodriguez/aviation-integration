@@ -32,7 +32,7 @@ describe('Health endpoint', () => {
       const res = await request(app).get('/api/test-error');
       expect(res.status).toBe(500);
       expect(res.body).toHaveProperty('error');
-      expect(res.body.error.message).toBe('Error de prueba');
+      expect(res.body.error.message).toBe('Test error');
    });
 
    it('debería responder 422 si dep_iata es inválido', async () => {
