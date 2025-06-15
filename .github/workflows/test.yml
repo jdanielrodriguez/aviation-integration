@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Crear archivo .env
+      - name: Create .env file
         run: |
           cat <<EOF > .env
           NODE_ENV=test
@@ -43,13 +43,13 @@ jobs:
           MAIL_TO=admin@tudominio.com
           EOF
 
-      - name: Limpiar volúmenes MySQL
+      - name: Clean MySQL volumes
         run: docker volume rm aviation_db_data || true && docker volume ls
 
-      - name: Levantar stack de desarrollo con Makefile
+      - name: Start development stack with Makefile
         run: make init-test
 
-      - name: Esperar healthcheck aviation_node
+      - name: Wait for aviation_node healthcheck
         run: |
           for i in {1..90}; do
             health=$(docker inspect --format='{{.State.Health.Status}}' aviation_node)
@@ -61,17 +61,16 @@ jobs:
             sleep 2
           done
 
-      - name: Run tests dentro del contenedor
+      - name: Run tests inside the container
         run: make test
 
-      - name: Detener stack de desarrollo con Makefile
+      - name: Stop development stack with Makefile
         run: make stop-dev
       
-      - name: Mostrar logs de aviation_node si falla
+      - name: Show aviation_node logs if failed
         if: failure()
         run: docker logs aviation_node || true
 
-      - name: Limpiar contenedores en caso de fallo
+      - name: Clean containers on failure
         if: failure()
         run: make stop-dev
-

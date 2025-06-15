@@ -13,18 +13,18 @@ describe('emailSender', () => {
       jest.clearAllMocks();
    });
 
-   it('debería ejecutar sendAdminEmail sin lanzar errores', async () => {
+   it('should execute sendAdminEmail without throwing errors', async () => {
       await expect(sendAdminEmail('Test Subject', 'Test Body')).resolves.not.toThrow();
    });
 
-   it('debería loguear un error si sendMail falla', async () => {
+   it('should log an error if sendMail fails', async () => {
       if (mailer) {
-         jest.spyOn(mailer, 'sendMail').mockRejectedValueOnce(new Error('Fallo SMTP'));
+         jest.spyOn(mailer, 'sendMail').mockRejectedValueOnce(new Error('SMTP failure'));
       }
       const loggerErrorSpy = jest.spyOn(logger, 'error');
-      await sendAdminEmail('Asunto Error', 'Cuerpo Error');
+      await sendAdminEmail('Error Subject', 'Error Body');
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-         'Fallo al enviar correo al administrador:',
+         'Failed to send email to administrator:',
          expect.any(Error)
       );
    });

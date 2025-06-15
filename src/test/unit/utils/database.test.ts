@@ -11,14 +11,14 @@ describe('database connection', () => {
       (logger.error as jest.Mock) = jest.fn();
    });
 
-   it('debería inicializar la conexión si no está inicializada', async () => {
+   it('should initialize the connection if it is not initialized', async () => {
       if (!AppDataSource.isInitialized) {
          await AppDataSource.initialize();
       }
       expect(AppDataSource.isInitialized).toBe(true);
    });
 
-   it('debería inicializar y correr migraciones correctamente', async () => {
+   it('should initialize and run migrations correctly', async () => {
       const initializeMock = jest.spyOn(AppDataSource, 'initialize').mockResolvedValueOnce(AppDataSource as any);
       const runMigrationsMock = jest.spyOn(AppDataSource, 'runMigrations').mockResolvedValueOnce([{ name: 'InitMigration' }] as any);
 
@@ -26,20 +26,20 @@ describe('database connection', () => {
 
       expect(initializeMock).toHaveBeenCalled();
       expect(runMigrationsMock).toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith('Base de Datos MySQL inicializada correctamente');
-      expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Migraciones ejecutadas: InitMigration'));
+      expect(logger.info).toHaveBeenCalledWith('MySQL Database initialized successfully');
+      expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Migrations executed: InitMigration'));
    });
 
-   it('debería registrar error si falla initialize', async () => {
+   it('should log error if initialize fails', async () => {
       jest.spyOn(AppDataSource, 'initialize').mockRejectedValueOnce(new Error('Init fail'));
       await expect(initializeDatabase()).rejects.toThrow('Init fail');
-      expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error initializando la base de datos:'), expect.any(Error));
+      expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error initializing the database:'), expect.any(Error));
    });
 
-   it('debería registrar error si falla runMigrations', async () => {
+   it('should log error if runMigrations fails', async () => {
       jest.spyOn(AppDataSource, 'initialize').mockResolvedValueOnce(AppDataSource as any);
       jest.spyOn(AppDataSource, 'runMigrations').mockRejectedValueOnce(new Error('Migration fail'));
       await expect(initializeDatabase()).rejects.toThrow('Migration fail');
-      expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error initializando la base de datos:'), expect.any(Error));
+      expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Error initializing the database:'), expect.any(Error));
    });
 });

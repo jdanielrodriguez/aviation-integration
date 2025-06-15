@@ -8,7 +8,7 @@ on:
 jobs:
   create-release-tag:
     runs-on: ubuntu-latest
-    name: Create Release Tag fron Branch
+    name: Create Release Tag from Branch
     permissions:
       contents: write
     steps:
@@ -64,12 +64,12 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Autenticar GCP
+      - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-      - name: Configurar gcloud
+      - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: aviation-integration
