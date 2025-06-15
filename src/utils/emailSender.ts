@@ -1,10 +1,10 @@
-import { mailer } from '../app';
 import logger from '../config/logger';
 import { config } from '../config/api';
 
 export async function sendAdminEmail(subject: string, message: string) {
+   const { mailer } = require('../app');
    if (!mailer) {
-      logger.warn('Mailer no disponible para enviar correo de error crítico');
+      logger.warn('Mailer not available to send critical error mail');
       return;
    }
 
@@ -16,6 +16,6 @@ export async function sendAdminEmail(subject: string, message: string) {
          text: message,
       });
    } catch (err) {
-      logger.error('Fallo al enviar correo al administrador:', err);
+      logger.error('Failed to send email to administrator:', err);
    }
 }

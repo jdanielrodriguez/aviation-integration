@@ -42,7 +42,7 @@ const apiLimiter = rateLimit({
    max: 100,
    standardHeaders: true,
    legacyHeaders: false,
-   message: { error: "Demasiadas solicitudes, por favor intenta más tarde." }
+   message: { error: "Too many requests, please try again later." }
 });
 app.use('/api', apiLimiter);
 
@@ -61,7 +61,7 @@ const redisConfig: any = {
 export const redisClient = createClient(redisConfig);
 
 redisClient.on('error', (err) => logger.error('Redis error:', err));
-redisClient.on('ready', () => logger.info('Redis conectado'));
+redisClient.on('ready', () => logger.info('Redis connected'));
 redisClient.connect();
 if (process.env.NODE_ENV === 'test') {
    redisClient?.quit?.().catch(() => {});
@@ -77,9 +77,9 @@ if (config.NODE_ENV !== 'production' && config.MAIL.HOST && config.MAIL.PORT) {
    if (mailer) {
       mailer.verify(err => {
          if (err) {
-            logger.error('Error verificando Mailhog/SMTP:', err);
+            logger.error('Error verifying Mailhog/SMTP:', err);
          } else {
-            logger.info('Mailer listo para enviar correos');
+            logger.info('Mailer ready to send emails');
          }
       });
    }
@@ -94,14 +94,14 @@ if (config.NODE_ENV !== 'production' && config.MAIL.HOST && config.MAIL.PORT) {
    if (mailer) {
       mailer.verify(err => {
          if (err) {
-            logger.error('Error verificando Gmail SMTP:', err);
+            logger.error('Error verifying Gmail SMTP:', err);
          } else {
-            logger.info('Gmail SMTP listo para enviar correos');
+            logger.info('Gmail SMTP ready to send emails');
          }
       });
    }
 } else {
-   logger.warn('Mailer no inicializado (sin configuración SMTP)');
+   logger.warn('Mailer not initialized (no SMTP configuration)');
    mailer = null;
 }
 
@@ -111,20 +111,20 @@ app.use('/api/health', healthRoutes);
 app.use('/api/v1/airports', airportRoutes);
 app.use('/api/v1/flights', flightRoutes);
 app.get('/api/test-error', (_req, _res) => {
-   throw new Error('Error de prueba');
+   throw new Error('Test error');
 });
 app.get('/', (_req, res) => {
    const readmePath = path.join(__dirname, '../README.md');
    fs.readFile(readmePath, 'utf8', (err, data) => {
       if (err) {
-         return res.status(500).send('No se pudo cargar el README.md');
+         return res.status(500).send('Could not load README.md');
       }
       res.type('text/plain').send(data);
    });
 });
 app.use((req, res, next) => {
    res.status(404).json({
-      error: 'Ruta no encontrada',
+      error: 'Route not found',
       path: req.originalUrl
    });
 });

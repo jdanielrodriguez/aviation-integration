@@ -7,7 +7,7 @@ jest.mock('../../../config/logger', () => ({
 }));
 
 describe('errorHandler middleware', () => {
-   it('debería devolver un error estructurado y registrar el error', () => {
+   it('should return a structured error and log the error', () => {
       const req = {} as Request;
       const res = {
          status: jest.fn().mockReturnThis(),

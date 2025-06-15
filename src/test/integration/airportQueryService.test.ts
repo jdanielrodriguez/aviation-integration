@@ -44,28 +44,28 @@ afterAll(async () => {
    await AppDataSource.destroy();
 });
 
-describe('getAirportsFromDb() - cobertura mínima asegurada', () => {
-   it('filtra por nombre de aeropuerto', async () => {
+describe('getAirportsFromDb() - minimum coverage ensured', () => {
+   it('filters by airport name', async () => {
       const result = await getAirportsFromDb({ search: 'aurora' });
       expect(result.data.some(a => a.iata_code === 'GUA')).toBe(true);
    });
 
-   it('filtra por iata_code', async () => {
+   it('filters by iata_code', async () => {
       const result = await getAirportsFromDb({ search: 'AAZ' });
       expect(result.data.some(a => a.iata_code === 'AAZ')).toBe(true);
    });
 
-   it('filtra por city_iata_code', async () => {
+   it('filters by city_iata_code', async () => {
       const result = await getAirportsFromDb({ search: 'aaz' });
       expect(result.data.some(a => a.city_iata_code === 'AAZ')).toBe(true);
    });
 
-   it('filtra por country_name', async () => {
+   it('filters by country_name', async () => {
       const result = await getAirportsFromDb({ search: 'guatemala' });
       expect(result.data.some(a => a.country_name === 'Guatemala')).toBe(true);
    });
 
-   it('aplica paginación', async () => {
+   it('applies pagination', async () => {
       const result = await getAirportsFromDb({ limit: '1', offset: '0' });
       expect(result.data.length).toBeLessThanOrEqual(1);
       expect(result.pagination.limit).toBe(1);

@@ -22,7 +22,7 @@ describe('flightController', () => {
       jest.clearAllMocks();
    });
 
-   it('debe retornar los vuelos correctamente', async () => {
+   it('should return flights successfully', async () => {
       const mockData = {
          pagination: { total: 1, count: 1, limit: 20, offset: 0 },
          data: [{ flight_number: '123', dep_iata: 'GUA' }]
@@ -37,7 +37,7 @@ describe('flightController', () => {
       expect(res.json).toHaveBeenCalledWith(mockData);
    });
 
-   it('debe manejar errores correctamente', async () => {
+   it('should handle errors properly', async () => {
       const error = new Error('fail');
 
       flightService.getFlightsFromDb.mockRejectedValue(error);

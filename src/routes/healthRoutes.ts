@@ -61,13 +61,13 @@ router.get('/', async (_req, res) => {
  * @swagger
  * /api/health:
  *   get:
- *     summary: Verifica el estado de los servicios principales
- *     description: Retorna información de estado (health) para MySQL, Redis y Mailer, además de uptime y versión de Node.js.
+ *     summary: Checks the status of main services
+ *     description: Returns health information for MySQL, Redis, and Mailer, as well as uptime and Node.js version.
  *     tags:
  *       - Health
  *     responses:
  *       200:
- *         description: Todos los servicios funcionan correctamente
+ *         description: All services are operational
  *         content:
  *           application/json:
  *             schema:
@@ -99,7 +99,7 @@ router.get('/', async (_req, res) => {
  *                       type: string
  *                       example: ok
  *       500:
- *         description: Uno o más servicios no están disponibles
+ *         description: One or more services are unavailable
  *         content:
  *           application/json:
  *             schema:
