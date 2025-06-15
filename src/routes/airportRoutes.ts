@@ -10,8 +10,8 @@ router.get('/', validateAirportQuery, getAirportsController);
  * @swagger
  * /api/v1/airports:
  *   get:
- *     summary: Obtiene una lista de aeropuertos (con búsqueda opcional)
- *     description: Retorna aeropuertos, filtrados opcionalmente por el parámetro de búsqueda.
+ *     summary: Obtiene una lista de aeropuertos con búsqueda opcional
+ *     description: Retorna aeropuertos, filtrados opcionalmente por nombre, código IATA, ciudad o país.
  *     tags:
  *       - Airports
  *     parameters:
@@ -22,7 +22,7 @@ router.get('/', validateAirportQuery, getAirportsController);
  *           minLength: 2
  *           maxLength: 100
  *         required: false
- *         description: Palabra clave para buscar aeropuertos por nombre, IATA o ciudad.
+ *         description: Texto para buscar por nombre, IATA, ciudad o país
  *       - in: query
  *         name: limit
  *         schema:
@@ -30,14 +30,14 @@ router.get('/', validateAirportQuery, getAirportsController);
  *           minimum: 1
  *           maximum: 1000
  *         required: false
- *         description: Número máximo de resultados a retornar.
+ *         description: Cantidad máxima de resultados
  *       - in: query
  *         name: offset
  *         schema:
  *           type: integer
  *           minimum: 0
  *         required: false
- *         description: Desplazamiento de resultados para paginación.
+ *         description: Desplazamiento de resultados para paginación
  *     responses:
  *       200:
  *         description: Lista de aeropuertos encontrada
@@ -68,25 +68,34 @@ router.get('/', validateAirportQuery, getAirportsController);
  *                     properties:
  *                       airport_name:
  *                         type: string
- *                         example: "Anaa"
+ *                         example: "Quetzaltenango"
  *                       iata_code:
  *                         type: string
- *                         example: "AAA"
+ *                         example: "AAZ"
  *                       icao_code:
  *                         type: string
- *                         example: "NTGA"
+ *                         example: "MGQZ"
  *                       latitude:
  *                         type: string
- *                         example: "-17.05"
+ *                         example: "14.870000"
  *                       longitude:
  *                         type: string
- *                         example: "-145.41667"
- *                       country_name:
- *                         type: string
- *                         example: "French Polynesia"
+ *                         example: "-91.500000"
  *                       timezone:
  *                         type: string
- *                         example: "Pacific/Tahiti"
+ *                         example: "America/Guatemala"
+ *                       gmt:
+ *                         type: string
+ *                         example: "-6"
+ *                       country_name:
+ *                         type: string
+ *                         example: "Guatemala"
+ *                       country_iso2:
+ *                         type: string
+ *                         example: "GT"
+ *                       city_iata_code:
+ *                         type: string
+ *                         example: "AAZ"
  *       422:
  *         description: Error de validación en los parámetros
  *         content:
