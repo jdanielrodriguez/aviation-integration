@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { AirportJson, AirlineJson, AircraftJson, FlightJson, LiveJson } from '../types/flight';
 
 @Entity({ name: 'flights' })
 export class Flight {
@@ -12,20 +13,20 @@ export class Flight {
    flight_status!: string;
 
    @Column('json')
-   departure!: any;
+   departure!: AirportJson;
 
    @Column('json')
-   arrival!: any;
+   arrival!: AirportJson;
 
    @Column('json')
-   airline!: any;
+   airline!: AirlineJson;
 
    @Column('json')
-   flight!: any;
+   flight!: FlightJson;
 
    @Column('json', { nullable: true })
-   aircraft!: any;
+   aircraft!: AircraftJson;
 
    @Column('json', { nullable: true })
-   live!: any;
+   live!: LiveJson;
 }

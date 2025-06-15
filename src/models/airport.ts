@@ -8,7 +8,7 @@ export class Airport {
    @Column()
    airport_name!: string;
 
-   @Column()
+   @Column({ unique: true })
    iata_code!: string;
 
    @Column()

@@ -106,7 +106,7 @@ if (config.NODE_ENV !== 'production' && config.MAIL.HOST && config.MAIL.PORT) {
 export { mailer };
 
 app.use('/api/health', healthRoutes);
-app.use('/api/v1/airlines', airportRoutes);
+app.use('/api/v1/airports', airportRoutes);
 app.use('/api/v1/flights', flightRoutes);
 app.get('/api/test-error', (_req, _res) => {
    throw new Error('Error de prueba');
