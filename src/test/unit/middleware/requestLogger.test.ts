@@ -6,7 +6,7 @@ jest.mock('../../../config/logger', () => ({
 }));
 
 describe('requestLogger middleware', () => {
-   it('debería registrar query y status', () => {
+   it('should record query and status', () => {
       const req: any = {
          method: 'GET',
          originalUrl: '/api/test',

@@ -6,10 +6,10 @@ import { initializeDatabase } from './config/database';
 initializeDatabase()
    .then(() => {
       app.listen(config.PORT, () => {
-         logger.info(`Servidor corriendo en puerto ${config.PORT} on ${config.NODE_ENV} mode`);
+         logger.info(`Server running on port ${config.PORT} and ${config.NODE_ENV} mode`);
       });
    })
    .catch((err) => {
-      logger.error('No se pudo inicializar la base de datos', err);
+      logger.error('The database could not be initialized', err);
       process.exit(1);
    });

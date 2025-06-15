@@ -3,10 +3,10 @@ import { Airport } from '../models/airport';
 import { AirportQueryParams } from '../types/airport';
 
 /**
- * Obtiene una lista de aeropuertos desde la base de datos con paginación y búsqueda.
- * @param query - Parámetros de consulta para filtrar y paginar los resultados.
- * @returns Un objeto que contiene la paginación y los datos de los aeropuertos.
- */
+* Gets a list of airports from the database with pagination and searching.
+* @param query - Query parameters for filtering and paginating the results.
+* @returns An object containing the pagination and airport data.
+*/
 export async function getAirportsFromDb(query: AirportQueryParams) {
    const {
       search = '',

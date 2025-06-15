@@ -6,11 +6,11 @@ export const swaggerOptions = {
       info: {
          title: 'Aviation Integration API',
          version: '1.0.0',
-         description: 'Documentación de la API para integración con AviationStack',
+         description: 'API documentation for integration with AviationStack',
       },
       servers: [
-         { url: 'http://localhost:8080', description: 'Desarrollo local' },
-         { url: 'https://aviation-integration-944235041157.us-central1.run.app', description: 'Producción' }
+         { url: 'https://aviation-integration-944235041157.us-central1.run.app', description: 'Production' },
+         { url: 'http://localhost:8080', description: 'Local development' }
       ]
    },
    apis: [

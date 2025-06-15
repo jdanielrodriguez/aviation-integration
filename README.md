@@ -1,44 +1,44 @@
 # Aviation Integration Service
 
-API RESTful desarrollada en **Node.js + TypeScript** para integración con [AviationStack](https://aviationstack.com/) y consulta de información de vuelos y aerolíneas.  
-Incluye entorno completo con **Docker Compose**, pruebas automáticas y fallback ante fallos externos.
+RESTful API developed in **Node.js + TypeScript** for integration with [AviationStack](https://aviationstack.com/) and for querying flight and airline information.  
+Includes a complete environment with **Docker Compose**, automated tests, and fallback in case of external failures.
 
 ---
 
 ## Badges
 
 ![CI](https://github.com/jdanielrodriguez/aviation-integration/actions/workflows/test.yml/badge.svg)  
-*Build y test automáticos vía GitHub Actions*
+*Build and test automation via GitHub Actions*
 
 ---
 
-## Servicios incluidos (Docker Compose)
+## Included Services (Docker Compose)
 
 - **Node.js** (Express, TypeScript)
 - **MySQL 8**
 - **Redis**
 - **phpMyAdmin**
-- **Mailhog** (testing de emails)
+- **Mailhog** (email testing)
 
 ---
 
-## Puesta en marcha rápida
+## Quick Start
 
-1. Asegúrate de tener Docker y Docker Compose instalados.
-2. Copia el archivo `.env.example` como `.env` y ajusta las variables si es necesario.
-3. Para construir las imágenes y crear los volúmenes ejecuta
+1. Make sure you have Docker and Docker Compose installed.
+2. Copy the `.env.example` file to `.env` and adjust variables if necessary.
+3. To build the images and create the volumes, run
 
 ```bash
 make init
 ```
 
-4. para levantar todos los servicios usa :
+4. To start all services use:
 
 ```bash
 make start
 ```
 
-5. para detenerlos usa:
+5. To stop them use:
 
 ```bash
 make stop-dev
@@ -46,91 +46,90 @@ make stop-dev
 
 ---
 
-## 🌐 Demo en producción
+## 🌐 Production Demo
 
-Puedes probar la API desplegada en Cloud Run aquí:
+You can try the API deployed on Cloud Run here:
 
 👉 [https://aviation-integration-944235041157.us-central1.run.app/](https://aviation-integration-944235041157.us-central1.run.app/)
 
 - Healthcheck: [/api/health](https://aviation-integration-944235041157.us-central1.run.app/api/health)
 - Swagger UI: [/docs](https://aviation-integration-944235041157.us-central1.run.app/docs)
-- Ejemplo vuelos: [/api/v1/flights?dep_iata=GUA](https://aviation-integration-944235041157.us-central1.run.app/api/v1/flights?dep_iata=GUA)
-- Ejemplo aeropuertos: [/api/v1/airports?search=guatemala](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airports?search=guatemala)
+- Flights example: [/api/v1/flights?dep_iata=GUA](https://aviation-integration-944235041157.us-central1.run.app/api/v1/flights?dep_iata=GUA)
+- Airports example: [/api/v1/airports?search=guatemala](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airports?search=guatemala)
 
 ---
 
-
-## Comandos rápidos
+## Quick Commands
 
 ```bash
-make init         # Inicializa red, volúmenes y servicios
-make start        # Levanta todos los servicios en desarrollo
-make stop-dev     # Detiene todos los servicios en desarrollo
-make node-shell   # Entra a la terminal de Node.js
-make db-shell     # Entra a la terminal de MySQL
-make redis-shell  # Entra a la terminal de Redis
-make mailhog      # Abre Mailhog en el navegador
-make phpmyadmin   # Abre phpMyAdmin en el navegador
-make test         # Corre las pruebas dentro del contenedor Node.js
+make init # Initialize network, volumes, and services
+make start # Start all development services
+make stop-dev # Stop all development services
+make node-shell # Enter Node.js terminal
+make db-shell # Enter MySQL terminal
+make redis-shell # Enter Redis terminal
+make mailhog # Open Mailhog in the browser
+make phpmyadmin # Open phpMyAdmin in the browser
+make test # Run tests inside the Node.js container
 ```
 
 ---
 
-## Variables de entorno
+## Environment Variables
 
-Consulta `.env.example` para la configuración necesaria.  
-**Glosario:**
+See `.env.example` for the necessary configuration.  
+**Glossary:**
 
-| Variable           | Descripción                            |
-| ------------------ | -------------------------------------- |
-| NODE_ENV           | Entorno (development, production, etc) |
-| PORT               | Puerto de la API (default: 8080)       |
-| AVIATIONSTACK_KEY  | API Key de AviationStack               |
-| AVIATIONSTACK_URL  | API URL de AviationStack               |
-| MYSQL\_\*          | Configuración MySQL                    |
-| REDIS\_\*          | Configuración Redis                    |
-| MAIL*\* / GMAIL*\* | SMTP/Mailhog/Gmail para testing        |
+| Variable           | Description                                |
+| ------------------ | ------------------------------------------ |
+| NODE_ENV           | Environment (development, production, etc) |
+| PORT               | API port (default: 8080)                   |
+| AVIATIONSTACK_KEY  | AviationStack API Key                      |
+| AVIATIONSTACK_URL  | AviationStack API URL                      |
+| MYSQL\_\*          | MySQL configuration                        |
+| REDIS\_\*          | Redis configuration                        |
+| MAIL*\* / GMAIL*\* | SMTP/Mailhog/Gmail for testing             |
 
 ---
 
-## Documentación de la API
+## API Documentation
 
 - Swagger UI: [http://localhost:8080/docs](http://localhost:8080/docs)
-- [docs/API.md](docs/API.md) — Resumen de endpoints, parámetros y ejemplos
-- Endpoints principales:
+- [docs/API.md](docs/API.md) — English version with endpoints summary, parameters and examples
+- Main endpoints:
 
-| Método | Ruta             | Descripción                              |
-| ------ | ---------------- | ---------------------------------------- |
-| GET    | /api/v1/airports | Lista de aeropuertos con search local    |
-| GET    | /api/v1/flights  | Búsqueda de vuelos con múltiples filtros |
-| GET    | /api/health      | Verificar estado de los servicios        |
-
----
-
-## Validación de parámetros
-
-Todos los parámetros de consulta son validados con **Joi**, y errores de validación devuelven HTTP 422.  
-Ver en `src/utils/airportValidator.ts` y `src/utils/flightsValidator.ts`.
+| Method | Path             | Description                         |
+| ------ | ---------------- | ----------------------------------- |
+| GET    | /api/v1/airports | List of airports with local search  |
+| GET    | /api/v1/flights  | Flight search with multiple filters |
+| GET    | /api/health      | Check the status of all services    |
 
 ---
 
-## Fallback y caching
+## Parameter Validation
 
-- Si la API externa falla, el sistema busca primero en Redis, luego en MySQL.
-- Todas las respuestas externas exitosas se persisten automáticamente.
-- Se aplica TTL sobre el cache en Redis.
+All query parameters are validated with **Joi**, and validation errors return HTTP 422.  
+See `src/utils/airportValidator.ts` and `src/utils/flightsValidator.ts`.
 
 ---
 
-## Pruebas automáticas
+## Fallback and Caching
 
-Soporte completo para:
+- If the external API fails, the system first checks Redis, then MySQL.
+- All successful external responses are automatically persisted.
+- A TTL is applied to Redis cache.
 
-- ✔️ Pruebas **unitarias** de controladores, servicios, validadores y middleware
-- ✔️ Pruebas **de integración** para endpoints REST
-- ✔️ Mock de datos para entorno `NODE_ENV=test` evitando llamadas reales a AviationStack
+---
 
-Para correr:
+## Automated Testing
+
+Full support for:
+
+- ✔️ **Unit tests** for controllers, services, validators, and middleware
+- ✔️ **Integration tests** for REST endpoints
+- ✔️ Data mocking for `NODE_ENV=test` to avoid real calls to AviationStack
+
+To run:
 
 ```bash
 make init
@@ -139,51 +138,51 @@ make test
 
 ---
 
-## Arquitectura y diagramas
+## Architecture and Diagrams
 
-- Diagrama de flujo de datos:  
+- Data flow diagram:  
   [docs/data-flow.puml](data-flow.puml)
 
 ---
 
-## Troubleshooting rápido
+## Quick Troubleshooting
 
-- ¿MySQL no levanta? Borra el volumen docker:
+- MySQL won't start? Delete the Docker volume:
   ```bash
   docker volume rm aviation_db_data
   ```
-- ¿La API no responde en el puerto? Verifica tu `.env` y puertos expuestos.
+- API not responding on port? Check your `.env` and exposed ports.
 
 ---
 
-## CI/CD y Deploy
+## CI/CD and Deploy
 
-- **Deploy automático:**  
-  Al hacer merge de `develop` → `master`, se despliega a Cloud Run mediante GitHub Actions y el secreto `GCP_SA_KEY`.
-- **Deploy manual:**
-  Si necesitas desplegar manualmente:
-  1. Consigue una key de servicio en formato JSON con permisos de `Cloud Run Admin`, `Storage Admin` y `Cloud Build`.
-  2. Autentica con:
+- **Automatic deploy:**  
+  When merging `develop` → `master`, it deploys to Cloud Run via GitHub Actions and the `GCP_SA_KEY` secret.
+- **Manual deploy:**
+  If you need to deploy manually:
+  1. Obtain a service account key in JSON format with `Cloud Run Admin`, `Storage Admin`, and `Cloud Build` permissions.
+  2. Authenticate with:
      ```bash
      gcloud auth activate-service-account --key-file gcp-key.json
      ```
-  3. Lanza el deploy:
+  3. Launch the deploy:
      ```bash
      make deploy
      ```
 
 ---
 
-## Linter y dependencias
+## Linter and Dependencies
 
-- Corre antes de cada PR
+- Run before every PR
 
 ```bash
 npm run lint
 npm run format
 ```
 
-- Audita dependencias regularmente con
+- Audit dependencies regularly with
 
 ```bash
 npm audit
@@ -191,13 +190,13 @@ npm audit
 
 ---
 
-## Contribuir
+## Contributing
 
-Por favor revisa las [CONTRIBUTING.md](docs/CONTRIBUTING.md) antes de enviar un pull request.
+Please review the [CONTRIBUTING.md](docs/CONTRIBUTING.md) before submitting a pull request.
 
 ---
 
-## Licencia
+## License
 
-MIT
-Autor: [@jdanielrodriguez](https://github.com/jdanielrodriguez)
+MIT  
+Author: [@jdanielrodriguez](https://github.com/jdanielrodriguez)

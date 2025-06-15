@@ -27,7 +27,7 @@ describe('airportController', () => {
       jest.clearAllMocks();
    });
 
-   it('debe retornar los aeropuertos correctamente', async () => {
+   it('should return airports successfully', async () => {
       const mockData = { pagination: { total: 1 }, data: [{ iata_code: 'GUA' }] };
       getAirportsFromDb.mockResolvedValue(mockData);
       syncAirportsIfNeeded.mockResolvedValue(undefined);
@@ -41,7 +41,7 @@ describe('airportController', () => {
       expect(res.json).toHaveBeenCalledWith(mockData);
    });
 
-   it('debe manejar errores correctamente', async () => {
+   it('should handle errors properly', async () => {
       const error = new Error('fail');
       getAirportsFromDb.mockRejectedValue(error);
       syncAirportsIfNeeded.mockResolvedValue(undefined);

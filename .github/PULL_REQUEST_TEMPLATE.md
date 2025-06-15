@@ -1,34 +1,34 @@
 <!--
-Por favor completa esta plantilla antes de enviar tu PR.
+Please complete this template before submitting your PR.
 -->
 
-# Descripción
+# Description
 
-<!-- Explica brevemente qué hace este PR y por qué es necesario. -->
+<!-- Briefly explain what this PR does and why it is needed. -->
 
-## ¿Qué tipo de cambio introduce este PR?
+## What type of change does this PR introduce?
 
-- [ ] Feature nueva
+- [ ] New feature
 - [ ] Fix / Bug
 - [ ] Refactor
-- [ ] Documentación
-- [ ] Chore (infraestructura, herramientas, etc.)
+- [ ] Documentation
+- [ ] Chore (infrastructure, tools, etc.)
 
 ## Checklist
 
-- [ ] El código sigue las guías del proyecto
-- [ ] Los tests existentes pasan localmente
-- [ ] Agregué pruebas nuevas/relevantes
-- [ ] La documentación está actualizada (README, API, ejemplos)
-- [ ] El pipeline CI/CD pasa correctamente
+- [ ] The code follows the project guidelines
+- [ ] All existing tests pass locally
+- [ ] I added new/relevant tests
+- [ ] Documentation is updated (README, API, examples)
+- [ ] CI/CD pipeline passes successfully
 
-## ¿Cómo probar los cambios?
+## How to test the changes?
 
-<!-- Instrucciones para probar este PR en local (comandos, pasos, etc). -->
+<!-- Instructions to test this PR locally (commands, steps, etc). -->
 
-## Referencias / Relacionados
+## References / Related
 
-<!-- Issues relacionados, pull requests previos, etc. -->
+<!-- Related issues, previous pull requests, etc. -->
 
 ---
 

@@ -29,7 +29,7 @@ export function validateFlightQuery(req: Request, res: Response, next: NextFunct
    if (error) {
       return next({
          status: 422,
-         message: 'Error de validación',
+         message: 'Validation error',
          errors: error.details.map(d => ({
             msg: d.message,
             path: d.path.join('.'),

@@ -21,11 +21,11 @@ export const AppDataSource = new DataSource({
 export const initializeDatabase = async () => {
    try {
       await AppDataSource.initialize();
-      logger.info('Base de Datos MySQL inicializada correctamente');
+      logger.info('MySQL Database initialized successfully');
       const migrations = await AppDataSource.runMigrations();
-      logger.info(`Migraciones ejecutadas: ${migrations.map(m => m.name).join(', ')}`);
+      logger.info(`Migrations executed: ${migrations.map(m => m.name).join(', ')}`);
    } catch (err) {
-      logger.error('Error initializando la base de datos:', err);
+      logger.error('Error initializing the database:', err);
       throw err;
    }
 };

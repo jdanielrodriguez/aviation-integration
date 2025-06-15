@@ -28,33 +28,33 @@ afterAll(async () => {
 
 describe('Health endpoint', () => {
    const originalRedisClient = redisClient;
-   it('debería responder 500 para errores internos', async () => {
+   it('should respond 500 for internal errors', async () => {
       const res = await request(app).get('/api/test-error');
       expect(res.status).toBe(500);
       expect(res.body).toHaveProperty('error');
-      expect(res.body.error.message).toBe('Error de prueba');
+      expect(res.body.error.message).toBe('Test error');
    });
 
-   it('debería responder 422 si dep_iata es inválido', async () => {
+   it('should respond 422 if dep_iata is invalid', async () => {
       const res = await request(app)
          .get('/api/v1/flights?dep_iata=A')
       expect(res.status).toBe(422);
       expect(res.body).toHaveProperty('error');
-      expect(res.body.error.message).toContain('validación');
+      expect(res.body.error.message).toContain('Validation');
       expect(res.body.error.details).toBeDefined();
    });
 
-   it('debería responder 422 si search es demasiado corto', async () => {
+   it('should respond 422 if search is too short', async () => {
       const res = await request(app)
          .get('/api/v1/airports?search=A');
       expect(res.status).toBe(422);
       expect(res.body).toHaveProperty('error');
-      expect(res.body.error.message).toContain('validación');
+      expect(res.body.error.message).toContain('Validation');
       expect(res.body.error.details).toBeDefined();
       expect(res.body.error.details[0].msg).toContain('"search" length must be at least 2 characters long');
    });
 
-   it('debería responder 400 por JSON inválido en el body', async () => {
+   it('should respond 400 for invalid JSON in the body', async () => {
       const res = await request(app)
          .post('/api/v1/flights')
          .set('Content-Type', 'application/json')
@@ -62,23 +62,23 @@ describe('Health endpoint', () => {
 
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('error');
-      expect(res.body.error.message).toContain('JSON inválido');
+      expect(res.body.error.message).toContain('Invalid JSON');
    });
 
-   it('debería responder 404 en ruta inexistente', async () => {
-      const res = await request(app).get('/api/ruta-que-no-existe');
+   it('should respond 404 for nonexistent route', async () => {
+      const res = await request(app).get('/api/route-that-does-not-exist');
       expect(res.status).toBe(404);
       expect(res.body).toHaveProperty('error');
-      expect(res.body.error).toContain('Ruta no encontrada');
+      expect(res.body.error).toContain('Route not found');
    });
 
-   it('debería responder ok', async () => {
+   it('should respond ok', async () => {
       const res = await request(app).get('/api/health');
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('status', 'ok');
    });
 
-   it('debería responder con el contenido del README.md en la raíz', async () => {
+   it('should respond with the content of README.md at root', async () => {
       const res = await request(app).get('/');
       expect(res.status).toBe(200);
       const readmePath = path.join(__dirname, '../../../README.md');
@@ -86,7 +86,7 @@ describe('Health endpoint', () => {
       expect(res.text).toContain(readmeContent.slice(0, 20));
    });
 
-   it('debería responder 500 si MySQL falla', async () => {
+   it('should respond 500 if MySQL fails', async () => {
       const oldQuery = AppDataSource.query;
       AppDataSource.query = jest.fn().mockRejectedValue(new Error('DB fail'));
       const res = await request(app).get('/api/health');
@@ -95,7 +95,7 @@ describe('Health endpoint', () => {
       AppDataSource.query = oldQuery;
    });
 
-   it('debería responder 500 si Redis está cerrado', async () => {
+   it('should respond 500 if Redis is closed', async () => {
       const spy = jest.spyOn(redisClient, 'isOpen', 'get').mockReturnValue(false);
       const res = await request(app).get('/api/health');
       expect(res.status).toBe(500);
@@ -103,7 +103,7 @@ describe('Health endpoint', () => {
       spy.mockRestore();
    });
 
-   it('debería responder 500 si Mailer falla', async () => {
+   it('should respond 500 if Mailer fails', async () => {
       if (!mailer) return;
       const originalVerify = mailer.verify;
       mailer.verify = jest.fn().mockImplementation((cb?: any) => {
@@ -116,7 +116,7 @@ describe('Health endpoint', () => {
       mailer.verify = originalVerify;
    });
 
-   it('debería responder 500 si mailer es null', async () => {
+   it('should respond 500 if mailer is null', async () => {
       jest.resetModules();
       jest.doMock('../../app', () => ({
          ...jest.requireActual('../../app'),
@@ -128,4 +128,24 @@ describe('Health endpoint', () => {
       expect(res.body.services.mailer).not.toBe('ok');
       jest.resetModules();
    });
+
+   it('should return CORS error for disallowed origin', async () => {
+      const res = await request(app)
+         .get('/api/health')
+         .set('Origin', 'http://not-allowed.com');
+      // The error is handled as a CORS error, it can return 500 or 403 depending on the configuration.
+      expect(res.status).toBe(500); // or 403 if you change it
+      expect(res.body).toHaveProperty('error');
+   });
+
+   it('should respond 500 if README.md cannot be loaded', async () => {
+      jest.spyOn(fs, 'readFile').mockImplementationOnce((...args: any[]) => {
+         const cb = args[args.length - 1];
+         cb(new Error('fail'));
+      });
+      const res = await request(app).get('/');
+      expect(res.status).toBe(500);
+      expect(res.text).toBe('Could not load README.md');
+   });
+
 });

@@ -27,9 +27,11 @@ afterAll(async () => {
 });
 
 describe('aviationStackService - getFlights() (unit)', () => {
+
    beforeEach(() => {
       jest.clearAllMocks();
    });
+
    jest.mock('../../../config/database', () => {
       return {
          AppDataSource: {
@@ -37,6 +39,14 @@ describe('aviationStackService - getFlights() (unit)', () => {
          }
       };
    });
+
+   jest.mock('../../../config/logger', () => ({
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      debug: jest.fn(),
+   }));
+
    it('should return mocked flights in test env', async () => {
       process.env.NODE_ENV = 'test';
       const { getFlights } = require('../../../services/aviationStackService');
@@ -83,7 +93,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
          Object.fromEntries(Object.entries({ access_key: config.AVIATIONSTACK_KEY, ...params }).filter(([, v]) => v !== undefined))
       ).toString();
       const cacheKey = `flights:${queryStr}`;
-      // Esto es lo que debes usar para setear el valor en cache, así seguro es igual
+      // This is what you should use to set the value in cache, so it's the same for sure
       await redisClient.set(cacheKey, JSON.stringify({ data: [{ flight_status: 'from-cache' }] }));
       const res = await getFlights({});
       expect(res.data[0].flight_status).toBe('from-cache');
@@ -105,32 +115,32 @@ describe('aviationStackService - getFlights() (unit)', () => {
       expect(sendAdminEmail).toHaveBeenCalled();
    });
 
-   it('getFromCache retorna null si el valor no existe', async () => {
-      // Forzar mock en redis
+   it('getFromCache returns null if value does not exist', async () => {
+      // Force mock in redis
       const { redisClient } = require('../../../app');
       redisClient.get = jest.fn().mockResolvedValueOnce(null);
       const { getFromCache } = require('../../../services/aviationStackService');
-      const value = await getFromCache('llave-inexistente');
+      const value = await getFromCache('non-existing-key');
       expect(value).toBeNull();
    });
 
-   it('getFromCache retorna objeto parseado si existe', async () => {
+   it('getFromCache returns parsed object if exists', async () => {
       const { redisClient } = require('../../../app');
       redisClient.get = jest.fn().mockResolvedValueOnce(JSON.stringify({ foo: 123 }));
       const { getFromCache } = require('../../../services/aviationStackService');
-      const value = await getFromCache('llave');
+      const value = await getFromCache('key');
       expect(value).toEqual({ foo: 123 });
    });
 
-   it('setCache guarda correctamente en redis', async () => {
+   it('setCache saves correctly in redis', async () => {
       const { redisClient } = require('../../../app');
       redisClient.setEx = jest.fn().mockResolvedValueOnce('OK');
       const { setCache } = require('../../../services/aviationStackService');
-      await setCache('clave', { z: 2 }, 55);
-      expect(redisClient.setEx).toHaveBeenCalledWith('clave', 55, JSON.stringify({ z: 2 }));
+      await setCache('key', { z: 2 }, 55);
+      expect(redisClient.setEx).toHaveBeenCalledWith('key', 55, JSON.stringify({ z: 2 }));
    });
 
-   it('hasSyncedToday retorna true si hay ApiCall hoy', async () => {
+   it('hasSyncedToday returns true if there is ApiCall today', async () => {
       const findOneMock = jest.fn().mockResolvedValueOnce({
          id: 1,
          endpoint: 'flights',
@@ -148,7 +158,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
       expect(res).toBe(true);
    });
 
-   it('hasSyncedToday retorna false si no hay ApiCall hoy', async () => {
+   it('hasSyncedToday returns false if there is no ApiCall today', async () => {
       jest.doMock('../../../config/database', () => ({
          AppDataSource: {
             getRepository: jest.fn().mockReturnValue({
@@ -164,7 +174,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
       jest.resetModules();
    });
 
-   it('logApiCall lanza error si falla el repo', async () => {
+   it('logApiCall throws error if repo fails', async () => {
       jest.doMock('../../../config/database', () => ({
          AppDataSource: {
             getRepository: jest.fn().mockReturnValue({
@@ -180,7 +190,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
       jest.resetModules();
    });
 
-   it('syncFlightsIfNeeded hace early return si isTestEnv=true', async () => {
+   it('syncFlightsIfNeeded does early return if isTestEnv=true', async () => {
       process.env.NODE_ENV = 'test';
       jest.resetModules();
       const { syncFlightsIfNeeded } = require('../../../services/aviationStackService');
@@ -188,7 +198,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
       expect(result).toBeUndefined();
    });
 
-   it('syncAirportsIfNeeded hace early return si isTestEnv=true', async () => {
+   it('syncAirportsIfNeeded does early return if isTestEnv=true', async () => {
       process.env.NODE_ENV = 'test';
       jest.resetModules();
       const { syncAirportsIfNeeded } = require('../../../services/aviationStackService');
@@ -196,14 +206,14 @@ describe('aviationStackService - getFlights() (unit)', () => {
       expect(result).toBeUndefined();
    });
 
-   it('debería lanzar error si setCache falla', async () => {
+   it('should throw error if setCache fails', async () => {
       const { setCache } = require('../../../services/aviationStackService');
       const { redisClient } = require('../../../app');
       redisClient.setEx = jest.fn().mockRejectedValueOnce(new Error('Redis fail'));
-      await expect(setCache('clave', { x: 1 }, 90)).rejects.toThrow('Redis fail');
+      await expect(setCache('key', { x: 1 }, 90)).rejects.toThrow('Redis fail');
    });
 
-   it('syncFlightsIfNeeded early return si ya está sincronizado', async () => {
+   it('syncFlightsIfNeeded early returns if already synced', async () => {
       process.env.NODE_ENV = 'production';
       jest.resetModules();
 
@@ -216,7 +226,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
       expect(result).toBeUndefined();
    });
 
-   it('fetch debería lanzar si sendAdminEmail falla', async () => {
+   it('fetch should throw if sendAdminEmail fails', async () => {
       process.env.NODE_ENV = 'production';
       jest.resetModules();
       const axios = require('axios');
@@ -227,7 +237,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
       await expect(getFlights({})).rejects.toThrow('mailer fail');
    });
 
-   it('syncAirportsIfNeeded maneja latitude/longitude inválidos', async () => {
+   it('syncAirportsIfNeeded handles invalid latitude/longitude', async () => {
       process.env.NODE_ENV = 'production';
       jest.resetModules();
 
@@ -245,7 +255,7 @@ describe('aviationStackService - getFlights() (unit)', () => {
             iata_code: 'XX',
             icao_code: 'XXX',
             latitude: 'no-num',
-            longitude: 'otra-num',
+            longitude: 'another-num',
             timezone: '', gmt: '', country_name: '', country_iso2: '', city_iata_code: ''
          }]
       });
@@ -258,5 +268,16 @@ describe('aviationStackService - getFlights() (unit)', () => {
       );
 
       process.env.NODE_ENV = 'test';
+   });
+
+   it('should log on Redis ready and error events', () => {
+      const logger = require('../../../config/logger');
+      const infoSpy = jest.spyOn(logger, 'info');
+      const errorSpy = jest.spyOn(logger, 'error');
+      const { redisClient } = require('../../../app');
+      redisClient.emit('ready');
+      redisClient.emit('error', new Error('fail'));
+      expect(infoSpy).toHaveBeenCalledWith('Redis connected');
+      expect(errorSpy).toHaveBeenCalledWith('Redis error:', expect.any(Error));
    });
 });

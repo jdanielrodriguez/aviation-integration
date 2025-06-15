@@ -1,35 +1,35 @@
 @startuml AviationStackFullFlow
-actor Usuario
+actor User
 group Endpoint: /api/v1/flights
-   Usuario -> API : GET /api/v1/flights
+   User -> API : GET /api/v1/flights
    API -> FlightController : getFlightsController
    FlightController -> AviationStackService : syncFlightsIfNeeded()
-   alt No sincronizado hoy
-      AviationStackService -> Redis : Verifica cache
-      AviationStackService -> AviationStack : Llama API externa
-      AviationStackService -> MySQL : Inserta/actualiza vuelos
-      AviationStackService -> Redis : Guarda en cache
-      AviationStackService -> Mailer : Notifica si falla
+   alt Not synchronized today
+      AviationStackService -> Redis : Check cache
+      AviationStackService -> AviationStack : Call external API
+      AviationStackService -> MySQL : Insert/update flights
+      AviationStackService -> Redis : Store in cache
+      AviationStackService -> Mailer : Notify if failure
    end
    FlightController -> FlightQueryService : getFlightsFromDb()
-   FlightQueryService -> MySQL : Consulta filtrada
+   FlightQueryService -> MySQL : Filtered query
    FlightController -> AviationStackService : logApiCall
-   FlightController -> API : Responde con datos de vuelos
+   FlightController -> API : Respond with flight data
 end group
 group Endpoint: /api/v1/airports
-   Usuario -> API : GET /api/v1/airports
+   User -> API : GET /api/v1/airports
    API -> AirportController : getAirportsController
    AirportController -> AviationStackService : syncAirportsIfNeeded()
-   alt No sincronizado hoy
-      AviationStackService -> Redis : Verifica cache
-      AviationStackService -> AviationStack : Llama API externa
-      AviationStackService -> MySQL : Inserta/actualiza aeropuertos
-      AviationStackService -> Redis : Guarda en cache
-      AviationStackService -> Mailer : Notifica si falla
+   alt Not synchronized today
+      AviationStackService -> Redis : Check cache
+      AviationStackService -> AviationStack : Call external API
+      AviationStackService -> MySQL : Insert/update airports
+      AviationStackService -> Redis : Store in cache
+      AviationStackService -> Mailer : Notify if failure
    end
    AirportController -> AirportQueryService : getAirportsFromDb()
-   AirportQueryService -> MySQL : Consulta con search y paginación
+   AirportQueryService -> MySQL : Query with search and pagination
    AirportController -> AviationStackService : logApiCall
-   AirportController -> API : Responde con datos de aeropuertos
+   AirportController -> API : Respond with airport data
 end group
 @enduml

@@ -10,8 +10,8 @@ router.get('/', validateAirportQuery, getAirportsController);
  * @swagger
  * /api/v1/airports:
  *   get:
- *     summary: Obtiene una lista de aeropuertos con búsqueda opcional
- *     description: Retorna aeropuertos, filtrados opcionalmente por nombre, código IATA, ciudad o país.
+ *     summary: Retrieves a list of airports with optional search
+ *     description: Returns airports, optionally filtered by name, IATA code, city, or country.
  *     tags:
  *       - Airports
  *     parameters:
@@ -22,7 +22,7 @@ router.get('/', validateAirportQuery, getAirportsController);
  *           minLength: 2
  *           maxLength: 100
  *         required: false
- *         description: Texto para buscar por nombre, IATA, ciudad o país
+ *         description: Text to search by name, IATA code, city, or country
  *       - in: query
  *         name: limit
  *         schema:
@@ -30,17 +30,17 @@ router.get('/', validateAirportQuery, getAirportsController);
  *           minimum: 1
  *           maximum: 1000
  *         required: false
- *         description: Cantidad máxima de resultados
+ *         description: Maximum number of results
  *       - in: query
  *         name: offset
  *         schema:
  *           type: integer
  *           minimum: 0
  *         required: false
- *         description: Desplazamiento de resultados para paginación
+ *         description: Results offset for pagination
  *     responses:
  *       200:
- *         description: Lista de aeropuertos encontrada
+ *         description: List of airports found
  *         content:
  *           application/json:
  *             schema:
@@ -97,7 +97,7 @@ router.get('/', validateAirportQuery, getAirportsController);
  *                         type: string
  *                         example: "AAZ"
  *       422:
- *         description: Error de validación en los parámetros
+ *         description: Validation error in parameters
  *         content:
  *           application/json:
  *             schema:
@@ -108,7 +108,7 @@ router.get('/', validateAirportQuery, getAirportsController);
  *                   properties:
  *                     message:
  *                       type: string
- *                       example: Error de validación
+ *                       example: Validation error
  *                     status:
  *                       type: number
  *                       example: 422
