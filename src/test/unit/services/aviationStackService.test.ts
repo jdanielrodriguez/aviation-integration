@@ -27,9 +27,11 @@ afterAll(async () => {
 });
 
 describe('aviationStackService - getFlights() (unit)', () => {
+
    beforeEach(() => {
       jest.clearAllMocks();
    });
+
    jest.mock('../../../config/database', () => {
       return {
          AppDataSource: {
@@ -37,6 +39,14 @@ describe('aviationStackService - getFlights() (unit)', () => {
          }
       };
    });
+
+   jest.mock('../../../config/logger', () => ({
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      debug: jest.fn(),
+   }));
+
    it('should return mocked flights in test env', async () => {
       process.env.NODE_ENV = 'test';
       const { getFlights } = require('../../../services/aviationStackService');
@@ -258,5 +268,16 @@ describe('aviationStackService - getFlights() (unit)', () => {
       );
 
       process.env.NODE_ENV = 'test';
+   });
+
+   it('should log on Redis ready and error events', () => {
+      const logger = require('../../../config/logger');
+      const infoSpy = jest.spyOn(logger, 'info');
+      const errorSpy = jest.spyOn(logger, 'error');
+      const { redisClient } = require('../../../app');
+      redisClient.emit('ready');
+      redisClient.emit('error', new Error('fail'));
+      expect(infoSpy).toHaveBeenCalledWith('Redis connected');
+      expect(errorSpy).toHaveBeenCalledWith('Redis error:', expect.any(Error));
    });
 });

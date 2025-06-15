@@ -1,8 +1,8 @@
-import { mailer } from '../app';
 import logger from '../config/logger';
 import { config } from '../config/api';
 
 export async function sendAdminEmail(subject: string, message: string) {
+   const { mailer } = require('../app');
    if (!mailer) {
       logger.warn('Mailer not available to send critical error mail');
       return;

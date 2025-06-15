@@ -128,4 +128,24 @@ describe('Health endpoint', () => {
       expect(res.body.services.mailer).not.toBe('ok');
       jest.resetModules();
    });
+
+   it('should return CORS error for disallowed origin', async () => {
+      const res = await request(app)
+         .get('/api/health')
+         .set('Origin', 'http://not-allowed.com');
+      // The error is handled as a CORS error, it can return 500 or 403 depending on the configuration.
+      expect(res.status).toBe(500); // or 403 if you change it
+      expect(res.body).toHaveProperty('error');
+   });
+
+   it('should respond 500 if README.md cannot be loaded', async () => {
+      jest.spyOn(fs, 'readFile').mockImplementationOnce((...args: any[]) => {
+         const cb = args[args.length - 1];
+         cb(new Error('fail'));
+      });
+      const res = await request(app).get('/');
+      expect(res.status).toBe(500);
+      expect(res.text).toBe('Could not load README.md');
+   });
+
 });
