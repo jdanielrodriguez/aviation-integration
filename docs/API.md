@@ -1,30 +1,31 @@
-# Documentación de la API
+# API Documentation
 
-Esta API expone servicios REST para la consulta de **aeropuertos y vuelos**, con integración a [AviationStack](https://aviationstack.com/).  
-Los resultados se almacenan localmente y son accesibles incluso ante fallos del proveedor externo.
+This API exposes REST services for querying **airports and flights**, integrated with [AviationStack](https://aviationstack.com/).  
+Results are stored locally and are accessible even if the external provider fails.
 
 ---
 
-### Demo en producción
+### Production Demo
 
-Base URL:  
+Base URL:
+
 ```text
 https://aviation-integration-944235041157.us-central1.run.app/
 ```
 
 - Swagger UI: [`/docs`](https://aviation-integration-944235041157.us-central1.run.app/docs)
-- Ejemplo vuelos: [`/api/v1/flights?dep_iata=GUA`](https://aviation-integration-944235041157.us-central1.run.app/api/v1/flights?dep_iata=GUA)
-- Ejemplo aeropuertos: [`/api/v1/airports?search=guatemala`](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airports?search=guatemala)
+- Flights example: [`/api/v1/flights?dep_iata=GUA`](https://aviation-integration-944235041157.us-central1.run.app/api/v1/flights?dep_iata=GUA)
+- Airports example: [`/api/v1/airports?search=guatemala`](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airports?search=guatemala)
 
 ---
 
-## Endpoints Principales
+## Main Endpoints
 
 ### 🩺 Healthcheck
 
 - **GET** `/api/health`
-- **Descripción:** Verifica la disponibilidad de MySQL, Redis y Mailer.
-- **Respuesta exitosa:**
+- **Description:** Checks the availability of MySQL, Redis, and Mailer.
+- **Successful response:**
 
 ```json
 {
@@ -40,25 +41,25 @@ https://aviation-integration-944235041157.us-central1.run.app/
 }
 ```
 
-- **Posibles errores:**
-  - `500` → Uno o más servicios están caídos.
+- **Possible errors:**
+  - `500` → One or more services are down.
 
 ---
 
-### ✈️ Aeropuertos
+### ✈️ Airports
 
 - **GET** `/api/v1/airports`
-- **Descripción:** Lista de aeropuertos (almacenada localmente tras la primera llamada).
-- **Parámetros:**
+- **Description:** List of airports (stored locally after the first call).
+- **Parameters:**
 
-  - `search` (string, opcional): Texto para buscar por nombre, ciudad o país.
-  - `limit` (int, opcional): Máximo de resultados a retornar (por defecto 20).
-  - `offset` (int, opcional): Desplazamiento para paginación.
+  - `search` (string, optional): Text to search by name, city, or country.
+  - `limit` (int, optional): Maximum number of results to return (default 20).
+  - `offset` (int, optional): Offset for pagination.
 
-- **Ejemplo de uso:**  
+- **Usage example:**  
   `/api/v1/airports?search=guatemala&limit=10&offset=0`
 
-- **Respuesta exitosa:**
+- **Successful response:**
 
 ```json
 {
@@ -88,25 +89,25 @@ https://aviation-integration-944235041157.us-central1.run.app/
 
 ---
 
-### 🛫 Vuelos
+### 🛫 Flights
 
 - **GET** `/api/v1/flights`
-- **Descripción:** Lista de vuelos con filtros múltiples. Los datos se sincronizan con AviationStack al menos una vez por día.
+- **Description:** List of flights with multiple filters. Data is synchronized with AviationStack at least once per day.
 
-- **Parámetros de búsqueda disponibles (todos opcionales):**
+- **Available search parameters (all optional):**
 
-  - `dep_iata`: Código IATA de aeropuerto de salida
-  - `arr_iata`: Código IATA de aeropuerto de llegada
-  - `flight_number`: Número de vuelo
-  - `flight_date`: Fecha del vuelo (`YYYY-MM-DD`)
+  - `dep_iata`: Departure airport IATA code
+  - `arr_iata`: Arrival airport IATA code
+  - `flight_number`: Flight number
+  - `flight_date`: Flight date (`YYYY-MM-DD`)
   - `flight_status`: `scheduled` | `active` | `landed` | `cancelled` | `incident` | `diverted`
-  - `limit`: cantidad de resultados (máx: 1000)
-  - `offset`: desplazamiento para paginación
+  - `limit`: number of results (max: 1000)
+  - `offset`: offset for pagination
 
-- **Ejemplo:**  
+- **Example:**  
   `/api/v1/flights?dep_iata=GUA&flight_status=scheduled&limit=20`
 
-- **Respuesta:**
+- **Response:**
 
 ```json
 {
@@ -147,23 +148,23 @@ https://aviation-integration-944235041157.us-central1.run.app/
 
 ---
 
-## 🧪 Validaciones y Errores
+## 🧪 Validations and Errors
 
-### Errores comunes
+### Common errors
 
-| Código | Significado           | Causa probable                            |
-| ------ | --------------------- | ----------------------------------------- |
-| 422    | Unprocessable Entity  | Algún parámetro es inválido               |
-| 429    | Too Many Requests     | Se alcanzó el límite de llamadas          |
-| 500    | Internal Server Error | Error inesperado o servicio externo caído |
+| Code | Meaning               | Likely cause                              |
+| ---- | --------------------- | ----------------------------------------- |
+| 422  | Unprocessable Entity  | One or more parameters are invalid        |
+| 429  | Too Many Requests     | Call limit reached                        |
+| 500  | Internal Server Error | Unexpected error or external service down |
 
-- **Ejemplo 422:**
+- **422 Example:**
 
 ```json
 {
   "error": {
     "status": 422,
-    "message": "Error de validación",
+    "message": "Validation error",
     "errors": [
       {
         "msg": "\"dep_iata\" length must be at least 3 characters long",
@@ -178,7 +179,7 @@ https://aviation-integration-944235041157.us-central1.run.app/
 
 ## 🧭 Swagger UI
 
-Puedes explorar y probar la API desde:
+You can explore and test the API at:
 
 [http://localhost:8080/docs](http://localhost:8080/docs)
 
@@ -186,8 +187,8 @@ Puedes explorar y probar la API desde:
 
 ## 🧰 Extras
 
-- Todos los datos se cachean en Redis por 90 segundos para evitar overuse del proveedor.
-- En caso de caída del API externa, la información puede responder desde la base de datos local (fallback).
-- Cada consulta se registra en la tabla `api_calls`.
+- All data is cached in Redis for 90 seconds to avoid overuse of the provider.
+- If the external API is down, data can be served from the local database (fallback).
+- Each query is logged in the `api_calls` table.
 
 ---

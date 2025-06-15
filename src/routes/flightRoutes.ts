@@ -5,12 +5,13 @@ import { validateFlightQuery } from '../utils/flightsValidator';
 const router = Router();
 
 router.get('/', validateFlightQuery, getFlightsController);
+
 /**
  * @swagger
  * /api/v1/flights:
  *   get:
- *     summary: Obtiene una lista de vuelos filtrados
- *     description: Retorna vuelos según los filtros opcionales como IATA, ICAO, fechas, estatus, delays y otros.
+ *     summary: Retrieves a list of filtered flights
+ *     description: Returns flights based on optional filters such as IATA, ICAO, dates, status, delays, and more.
  *     tags:
  *       - Flights
  *     parameters:
@@ -19,108 +20,108 @@ router.get('/', validateFlightQuery, getFlightsController);
  *         schema:
  *           type: string
  *           format: date
- *         description: Fecha del vuelo (YYYY-MM-DD)
+ *         description: Flight date (YYYY-MM-DD)
  *       - in: query
  *         name: flight_status
  *         schema:
  *           type: string
  *           enum: [scheduled, active, landed, cancelled, incident, diverted]
- *         description: Estado del vuelo
+ *         description: Flight status
  *       - in: query
  *         name: dep_iata
  *         schema:
  *           type: string
- *         description: Código IATA del aeropuerto de salida
+ *         description: Departure airport IATA code
  *       - in: query
  *         name: arr_iata
  *         schema:
  *           type: string
- *         description: Código IATA del aeropuerto de llegada
+ *         description: Arrival airport IATA code
  *       - in: query
  *         name: dep_icao
  *         schema:
  *           type: string
- *         description: Código ICAO del aeropuerto de salida
+ *         description: Departure airport ICAO code
  *       - in: query
  *         name: arr_icao
  *         schema:
  *           type: string
- *         description: Código ICAO del aeropuerto de llegada
+ *         description: Arrival airport ICAO code
  *       - in: query
  *         name: airline_name
  *         schema:
  *           type: string
- *         description: Nombre de la aerolínea
+ *         description: Airline name
  *       - in: query
  *         name: airline_iata
  *         schema:
  *           type: string
- *         description: Código IATA de la aerolínea
+ *         description: Airline IATA code
  *       - in: query
  *         name: airline_icao
  *         schema:
  *           type: string
- *         description: Código ICAO de la aerolínea
+ *         description: Airline ICAO code
  *       - in: query
  *         name: flight_number
  *         schema:
  *           type: string
- *         description: Número del vuelo
+ *         description: Flight number
  *       - in: query
  *         name: flight_iata
  *         schema:
  *           type: string
- *         description: Código IATA del vuelo
+ *         description: Flight IATA code
  *       - in: query
  *         name: flight_icao
  *         schema:
  *           type: string
- *         description: Código ICAO del vuelo
+ *         description: Flight ICAO code
  *       - in: query
  *         name: min_delay_dep
  *         schema:
  *           type: integer
- *         description: Minutos mínimos de retraso en salida
+ *         description: Minimum departure delay in minutes
  *       - in: query
  *         name: max_delay_dep
  *         schema:
  *           type: integer
- *         description: Minutos máximos de retraso en salida
+ *         description: Maximum departure delay in minutes
  *       - in: query
  *         name: min_delay_arr
  *         schema:
  *           type: integer
- *         description: Minutos mínimos de retraso en llegada
+ *         description: Minimum arrival delay in minutes
  *       - in: query
  *         name: max_delay_arr
  *         schema:
  *           type: integer
- *         description: Minutos máximos de retraso en llegada
+ *         description: Maximum arrival delay in minutes
  *       - in: query
  *         name: arr_scheduled_time_dep
  *         schema:
  *           type: string
  *           format: date
- *         description: Fecha programada de salida
+ *         description: Scheduled departure date
  *       - in: query
  *         name: arr_scheduled_time_arr
  *         schema:
  *           type: string
  *           format: date
- *         description: Fecha programada de llegada
+ *         description: Scheduled arrival date
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Límite de resultados
+ *         description: Result limit
  *       - in: query
  *         name: offset
  *         schema:
  *           type: integer
- *         description: Offset para paginación
+ *         description: Offset for pagination
  *     responses:
  *       200:
- *         description: Lista de vuelos encontrada
+ *         description: List of flights found
  *         content:
  *           application/json:
  *             schema:
@@ -158,7 +159,7 @@ router.get('/', validateFlightQuery, getFlightsController);
  *                         type: string
  *                         example: "active"
  *       422:
- *         description: Error de validación en los parámetros
+ *         description: Validation error in parameters
  *         content:
  *           application/json:
  *             schema:
@@ -169,7 +170,7 @@ router.get('/', validateFlightQuery, getFlightsController);
  *                   properties:
  *                     message:
  *                       type: string
- *                       example: Error de validación
+ *                       example: Validation error
  *                     status:
  *                       type: number
  *                       example: 422

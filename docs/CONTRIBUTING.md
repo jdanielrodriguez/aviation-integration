@@ -1,140 +1,140 @@
-# Guía de Contribución
+# Contribution Guide
 
-¡Gracias por tu interés en contribuir a **Aviation Integration Service**!  
-Sigue estas reglas para asegurar calidad y coherencia en el proyecto.
+Thank you for your interest in contributing to **Aviation Integration Service**!  
+Please follow these rules to ensure quality and consistency in the project.
 
 ---
 
-## Flujo de trabajo
+## Workflow
 
-1. **Forkea** el repositorio y clona tu copia local.
-2. Crea una **branch** para tu mejora o corrección:
+1. **Fork** the repository and clone your local copy.
+2. Create a **branch** for your improvement or fix:
    ```bash
-   git checkout -b feature/nombre-tu-feature
+   git checkout -b feature/your-feature-name
    ```
-3. Haz **commits pequeños y descriptivos** usando [Conventional Commits](https://www.conventionalcommits.org/es/v1.0.0/):
-   - Ejemplo:
-     - `feat: agrega endpoint de vuelos`
-     - `fix: corrige validación en airlines`
-     - `docs: actualiza el README`
-     - `chore: actualiza dependencias`
-     - Usa `!` para cambios mayores: `refactor!: elimina compatibilidad anterior`
-4. Sigue la convención de nombres para ramas:
-   - `feature/` para nuevas funcionalidades.
-   - `fix/` para correcciones.
-   - `docs/` para documentación.
-   - `chore/` para tareas menores o de mantenimiento.
-   - `release/vX.Y.Z` para preparar un nuevo release.
-5. **Haz Pull Request a `develop`**.
-   - No envíes cambios directamente a `master`.
-6. Espera la revisión y realiza los cambios sugeridos.
-7. Para **liberar una nueva versión de producción:**
-   - Crea una rama `release/vX.Y.Z` desde `develop` (elige la nueva versión según los cambios).
-   - Haz Pull Request de `release/vX.Y.Z` a `master`.  
-     (No olvides documentar cambios en el PR.)
-   - Al hacer merge, se generará automáticamente un tag `vX.Y.Z` y se desplegará el release en producción.
-   - Si nombras la rama solo `release/`, el sistema incrementará el último patch automáticamente (ejemplo: de `v1.2.3` a `v1.2.4`).
-8. Nunca subas tu archivo `.env` real ni credenciales.
+3. Make **small and descriptive commits** using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+   - Example:
+     - `feat: add flights endpoint`
+     - `fix: fix validation in airlines`
+     - `docs: update README`
+     - `chore: update dependencies`
+     - Use `!` for breaking changes: `refactor!: remove backward compatibility`
+4. Follow the branch naming convention:
+   - `feature/` for new features.
+   - `fix/` for bug fixes.
+   - `docs/` for documentation.
+   - `chore/` for minor or maintenance tasks.
+   - `release/vX.Y.Z` to prepare a new release.
+5. **Make a Pull Request to `develop`.**
+   - Do not push changes directly to `master`.
+6. Wait for review and make the suggested changes.
+7. To **release a new production version:**
+   - Create a `release/vX.Y.Z` branch from `develop` (choose the new version based on the changes).
+   - Make a Pull Request from `release/vX.Y.Z` to `master`.  
+     (Don’t forget to document changes in the PR.)
+   - When merged, a `vX.Y.Z` tag will be generated automatically and the release will be deployed to production.
+   - If you name the branch just `release/`, the system will automatically increment the last patch (e.g., from `v1.2.3` to `v1.2.4`).
+8. Never upload your real `.env` file or credentials.
 
 ---
 
-**Nota:**  
-La protección de ramas impide pushear directo a `master` y requiere PRs para cualquier cambio en producción. El deploy solo se ejecuta al subir un nuevo tag que empieza con `v`.
+**Note:**  
+Branch protection prevents direct push to `master` and requires PRs for any production changes. Deployment only runs when pushing a new tag starting with `v`.
 
 ---
 
-## Estilo de código
+## Code Style
 
-- Usa **TypeScript** y sigue la arquitectura de carpetas del repo.
-- Ejecuta `npm run lint` (si existe) antes de hacer commit.
-- Usa comillas simples (`'`) y punto y coma (`;`).
-- Mantén los métodos y archivos **pequeños y bien comentados**.
+- Use **TypeScript** and follow the repo’s folder architecture.
+- Run `npm run lint` (if available) before committing.
+- Use single quotes (`'`) and semicolons (`;`).
+- Keep methods and files **small and well commented**.
 
 ---
 
-## 🧪 Pruebas Automáticas
+## 🧪 Automated Testing
 
-Antes de enviar un PR, asegúrate de:
+Before submitting a PR, make sure to:
 
-- Ejecutar **todas las pruebas** con:
+- Run **all tests** with:
 
   ```bash
   make test
   ```
 
-- Verificar que no queden handles abiertos o conexiones sin cerrar.
-- Si agregaste nuevos endpoints o validaciones, incluye pruebas:
-  - Unitarias (`/test/unit`)
-  - De integración (`/test/integration`)
+- Verify that there are no open handles or unclosed connections.
+- If you added new endpoints or validations, include tests:
+  - Unit tests (`/test/unit`)
+  - Integration tests (`/test/integration`)
 
-> ⚠️ Los PRs sin pruebas nuevas (cuando se agregan funcionalidades) serán rechazados.
-
----
-
-## 🧼 Código limpio y mantenible
-
-- Evita lógica compleja en controladores, delega a servicios.
-- Prefiere funciones puras y desacopladas, fáciles de testear.
-- Agrega comentarios solo si el código no se explica por sí mismo.
-- No dejes `console.log`; usa `logger.debug/info/error`.
+> ⚠️ PRs without new tests (when adding features) will be rejected.
 
 ---
 
-## Políticas de ramas y protección
+## 🧼 Clean and Maintainable Code
 
-- **No se permite pushear directamente** a `master` ni a ramas protegidas (`master`, `develop`, `releases`).
-- **Todos los cambios** en `master` requieren Pull Request y aprobación de al menos 1 revisor.
-- **Los tests automáticos** deben pasar para poder hacer merge.
-- **No se permiten** force-push (`--force`) ni eliminar ramas protegidas.
-- **Para actualizar tu rama:** haz **rebase** o **merge** desde `develop` antes de abrir el PR hacia `master`.
-- **Ramas de release:** usa el patrón `release/vX.Y.Z` y haz PR contra `master` para despliegue.
-- Solo los **tags** con formato `vX.Y.Z` activan el workflow de producción.
+- Avoid complex logic in controllers; delegate to services.
+- Prefer pure and decoupled functions, easy to test.
+- Add comments only if the code isn’t self-explanatory.
+- Do not leave `console.log`; use `logger.debug/info/error`.
 
 ---
 
-## Revisión de Pull Requests
+## Branch and Protection Policies
 
-- Los PRs serán revisados por al menos un colaborador.
-- **No se aceptan cambios sin justificación** clara o sin pruebas automáticas (si aplica).
-- Si tu cambio rompe los tests, se rechazará hasta corregirlo.
-
----
-
-## Seguridad
-
-- No subas archivos `.env` ni secretos.
-- Usa las variables de entorno según la plantilla `.env.example`.
+- **Direct push is not allowed** to `master` or protected branches (`master`, `develop`, `releases`).
+- **All changes** in `master` require a Pull Request and approval from at least 1 reviewer.
+- **All automated tests** must pass before merging.
+- **Force-push (`--force`) or deleting protected branches is not allowed.**
+- **To update your branch:** do a **rebase** or **merge** from `develop` before opening the PR to `master`.
+- **Release branches:** use the pattern `release/vX.Y.Z` and open a PR to `master` for deployment.
+- Only **tags** in the `vX.Y.Z` format trigger the production workflow.
 
 ---
 
-## Proceso de despliegue
+## Pull Request Review
 
-- **Deploy automático (recomendado):**
+- PRs will be reviewed by at least one collaborator.
+- **No changes will be accepted without clear justification or without automated tests (if applicable).**
+- If your change breaks the tests, it will be rejected until fixed.
 
-  - El despliegue a producción se realiza **solo al crear un tag tipo `vX.Y.Z`** en GitHub.
-  - El flujo recomendado es:
-    1. Trabaja en branches feature y mergea a `develop`.
-    2. Cuando esté listo el release, crea una rama `release/vX.Y.Z` desde `develop`.
-    3. Haz Pull Request de `release/vX.Y.Z` a `master`.
-    4. Una vez aprobado y mergeado el PR a `master`, **crea el tag** (`vX.Y.Z`) apuntando a `master`.
-    5. Al pushear el tag, **GitHub Actions despliega automáticamente** a Cloud Run usando el secreto `GCP_SA_KEY`.
+---
 
-- **Deploy manual (opcional):**
+## Security
 
-  1. Consigue una key de servicio (JSON) con permisos de `Cloud Run Admin`, `Storage Admin` y `Cloud Build`.
-  2. Autentica localmente:
+- Do not upload `.env` files or secrets.
+- Use environment variables as per the `.env.example` template.
+
+---
+
+## Deployment Process
+
+- **Automatic deploy (recommended):**
+
+  - Production deployment is performed **only when creating a `vX.Y.Z` tag** in GitHub.
+  - The recommended flow is:
+    1. Work on feature branches and merge to `develop`.
+    2. When ready for release, create a `release/vX.Y.Z` branch from `develop`.
+    3. Open a Pull Request from `release/vX.Y.Z` to `master`.
+    4. Once approved and merged to `master`, **create the tag** (`vX.Y.Z`) pointing to `master`.
+    5. When the tag is pushed, **GitHub Actions automatically deploys** to Cloud Run using the `GCP_SA_KEY` secret.
+
+- **Manual deploy (optional):**
+
+  1. Get a service key (JSON) with `Cloud Run Admin`, `Storage Admin`, and `Cloud Build` permissions.
+  2. Authenticate locally:
      ```bash
      gcloud auth activate-service-account --key-file gcp-key.json
      ```
-  3. Lanza el deploy manual:
+  3. Launch the manual deploy:
      ```bash
      make deploy
      ```
 
-- **Importante:**  
-  No hagas deploy directo a producción fuera de este flujo.  
-  El pipeline solo se ejecuta para tags que sigan el patrón `v*` (por ejemplo: `v1.0.0`).
+- **Important:**  
+  Do not deploy directly to production outside this flow.  
+  The pipeline only runs for tags that follow the `v*` pattern (e.g., `v1.0.0`).
 
 ---
 
-¡Gracias por ayudar a mejorar este proyecto!
+Thank you for helping to improve this project!
