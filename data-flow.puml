@@ -1,11 +1,35 @@
-@startuml AviationStackMiddleware
+@startuml AviationStackFullFlow
 actor Usuario
-Usuario -> API : Solicita vuelos
-API -> Controller : Recibe petición
-Controller -> Service : Valida y procesa
-Service -> AviationStack : Llama API externa
-Service -> MySQL : Guarda registro
-Service -> Redis : Verifica cache
-Service -> Mailer : Envía notificación (opcional)
-Controller -> API : Responde al usuario
+group Endpoint: /api/v1/flights
+   Usuario -> API : GET /api/v1/flights
+   API -> FlightController : getFlightsController
+   FlightController -> AviationStackService : syncFlightsIfNeeded()
+   alt No sincronizado hoy
+      AviationStackService -> Redis : Verifica cache
+      AviationStackService -> AviationStack : Llama API externa
+      AviationStackService -> MySQL : Inserta/actualiza vuelos
+      AviationStackService -> Redis : Guarda en cache
+      AviationStackService -> Mailer : Notifica si falla
+   end
+   FlightController -> FlightQueryService : getFlightsFromDb()
+   FlightQueryService -> MySQL : Consulta filtrada
+   FlightController -> AviationStackService : logApiCall
+   FlightController -> API : Responde con datos de vuelos
+end group
+group Endpoint: /api/v1/airports
+   Usuario -> API : GET /api/v1/airports
+   API -> AirportController : getAirportsController
+   AirportController -> AviationStackService : syncAirportsIfNeeded()
+   alt No sincronizado hoy
+      AviationStackService -> Redis : Verifica cache
+      AviationStackService -> AviationStack : Llama API externa
+      AviationStackService -> MySQL : Inserta/actualiza aeropuertos
+      AviationStackService -> Redis : Guarda en cache
+      AviationStackService -> Mailer : Notifica si falla
+   end
+   AirportController -> AirportQueryService : getAirportsFromDb()
+   AirportQueryService -> MySQL : Consulta con search y paginación
+   AirportController -> AviationStackService : logApiCall
+   AirportController -> API : Responde con datos de aeropuertos
+end group
 @enduml

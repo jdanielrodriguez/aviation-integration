@@ -79,7 +79,7 @@ router.get('/', async (_req, res) => {
  *                 timestamp:
  *                   type: string
  *                   format: date-time
- *                   example: "2024-06-14T07:22:23.982Z"
+ *                   example: "2025-06-15T02:18:49.805Z"
  *                 uptime:
  *                   type: number
  *                   example: 1234.567
@@ -99,7 +99,7 @@ router.get('/', async (_req, res) => {
  *                       type: string
  *                       example: ok
  *       500:
- *         description: Algún servicio no está disponible o falló
+ *         description: Uno o más servicios no están disponibles
  *         content:
  *           application/json:
  *             schema:
@@ -107,9 +107,10 @@ router.get('/', async (_req, res) => {
  *               properties:
  *                 status:
  *                   type: string
- *                   example: ok
+ *                   example: fail
  *                 timestamp:
  *                   type: string
+ *                   format: date-time
  *                 uptime:
  *                   type: number
  *                 node_version:
@@ -122,10 +123,10 @@ router.get('/', async (_req, res) => {
  *                       example: fail
  *                     redis:
  *                       type: string
- *                       example: ok
+ *                       example: ko
  *                     mailer:
  *                       type: string
- *                       example: ok
+ *                       example: fail
  */
 
 export default router;

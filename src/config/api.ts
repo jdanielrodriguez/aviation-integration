@@ -2,16 +2,19 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-function required(key: string): string {
+export function required(key: string): string {
    const value = process.env[key];
    if (!value) throw new Error(`Config error: Missing env var ${key}`);
    return value;
 }
 
+export const isTestEnv = process.env.NODE_ENV === 'test';
+
 export const config = {
    NODE_ENV: process.env.NODE_ENV || 'development',
    PORT: process.env.PORT || process.env.DEFAULT_PORT || '8080',
    AVIATIONSTACK_KEY: required('AVIATIONSTACK_KEY'),
+   AVIATIONSTACK_URL: required('AVIATIONSTACK_URL') || 'https://api.aviationstack.com/v1',
    MYSQL: {
       HOST: required('MYSQL_HOST'),
       PORT: process.env.MYSQL_PORT || '3306',
@@ -29,5 +32,7 @@ export const config = {
       USER: process.env.GMAIL_USER || '',
       PASSWORD: process.env.GMAIL_PASS || '',
       PORT: process.env.MAIL_PORT || '1025',
+      FROM: process.env.MAIL_FROM || 'alertas@aviation.com',
+      TO: process.env.MAIL_TO || 'admin@aviation.com'
    }
 };

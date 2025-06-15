@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+import { syncFlightsIfNeeded, logApiCall } from '../services/aviationStackService';
+import { getFlightsFromDb } from '../services/flightQueryService';
+import { FlightQueryParams } from '../types/flight';
 
-export const getFlights = async (req: Request, res: Response, next: NextFunction) => {
+export const getFlightsController = async (req: Request, res: Response, next: NextFunction) => {
    try {
-      res.json({ message: 'Lista de vuelos' });
+      await syncFlightsIfNeeded(); 
+      const result = await getFlightsFromDb(req.query as FlightQueryParams);
+      await logApiCall('flights', req.query, result, 200);
+      res.json(result);
    } catch (error) {
       next(error);
    }

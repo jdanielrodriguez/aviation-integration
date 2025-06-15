@@ -6,7 +6,7 @@ import { initializeDatabase } from './config/database';
 initializeDatabase()
    .then(() => {
       app.listen(config.PORT, () => {
-         logger.info(`Servidor corriendo en puerto ${config.PORT}`);
+         logger.info(`Servidor corriendo en puerto ${config.PORT} on ${config.NODE_ENV} mode`);
       });
    })
    .catch((err) => {
