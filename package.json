@@ -7,7 +7,7 @@
     "start": "tsc && node dist/index.js",
     "dev": "nodemon --watch src -e ts --exec ts-node src/index.ts",
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm migration:generate -- -d src/config/database.ts",
     "migration:run": "npm run typeorm migration:run -- -d src/config/database.ts"

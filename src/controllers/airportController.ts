@@ -13,5 +13,3 @@ export const getAirportsController = async (req: Request, res: Response, next: N
       next(error);
    }
 };
-
-

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MoreThanOrEqual } from 'typeorm';
 import { redisClient } from '../app';
 import logger from '../config/logger';
-import { config } from '../config/api';
+import { config, isTestEnv } from '../config/api';
 import { AppDataSource } from '../config/database';
 import { AirportQueryParams } from '../types/airport';
 import { FlightQueryParams } from '../types/flight';
@@ -10,8 +10,9 @@ import { sendAdminEmail } from '../utils/emailSender';
 import { ApiCall } from '../models/apiCall';
 import { Airport } from '../models/airport';
 import { Flight } from '../models/flight';
+import { MOCK_FLIGHTS } from '../test/mocks/aviationData';
 
-async function hasSyncedToday(endpoint: string): Promise<boolean> {
+export async function hasSyncedToday(endpoint: string): Promise<boolean> {
    const repo = AppDataSource.getRepository(ApiCall);
    const todayStart = new Date();
    todayStart.setUTCHours(0, 0, 0, 0);
@@ -27,16 +28,16 @@ async function hasSyncedToday(endpoint: string): Promise<boolean> {
    return !!result;
 }
 
-async function getFromCache(key: string): Promise<any | null> {
+export async function getFromCache(key: string): Promise<any | null> {
    const cached = await redisClient.get(key);
    return cached ? JSON.parse(cached) : null;
 }
 
-async function setCache(key: string, data: any, ttl: number = 90) {
+export async function setCache(key: string, data: any, ttl: number = 90) {
    await redisClient.setEx(key, ttl, JSON.stringify(data));
 }
 
-async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryParams) {
+export async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryParams) {
    const queryStr = new URLSearchParams(
       Object.fromEntries(
          Object.entries({ access_key: config.AVIATIONSTACK_KEY, ...params }).filter(
@@ -51,6 +52,14 @@ async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryP
    if (cached) {
       logger.debug(`[CACHE] HIT ${cacheKey}`);
       return cached;
+   }
+
+   if (isTestEnv) {
+      logger.debug(`[TEST] Returning mocked data for ${endpoint}`);
+      return {
+         data: MOCK_FLIGHTS,
+         pagination: { count: 1, total: 1, limit: 100, offset: 0 }
+      };
    }
 
    try {
@@ -72,6 +81,7 @@ async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryP
 }
 
 export async function syncAirportsIfNeeded() {
+   if (isTestEnv) return;
    const alreadySynced = await hasSyncedToday('airports');
    if (alreadySynced) return;
 
@@ -96,6 +106,7 @@ export async function syncAirportsIfNeeded() {
 }
 
 export async function syncFlightsIfNeeded() {
+   if (isTestEnv) return;
    const alreadySynced = await hasSyncedToday('flights');
    if (alreadySynced) return;
 

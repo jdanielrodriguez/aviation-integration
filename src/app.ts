@@ -63,7 +63,9 @@ export const redisClient = createClient(redisConfig);
 redisClient.on('error', (err) => logger.error('Redis error:', err));
 redisClient.on('ready', () => logger.info('Redis conectado'));
 redisClient.connect();
-
+if (process.env.NODE_ENV === 'test') {
+   redisClient?.quit?.().catch(() => {});
+}
 let mailer: ReturnType<typeof createTransport> | null = null;
 
 if (config.NODE_ENV !== 'production' && config.MAIL.HOST && config.MAIL.PORT) {

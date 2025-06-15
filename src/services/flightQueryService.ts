@@ -46,9 +46,10 @@ export async function getFlightsFromDb(query: FlightQueryParams) {
    }
 
    if (flight_number) {
-      qb.andWhere('LOWER(flight.flight_number) = :flight_number', {
-         flight_number: flight_number.toLowerCase()
-      });
+      qb.andWhere(
+         'LOWER(JSON_UNQUOTE(JSON_EXTRACT(flight.flight, "$.number"))) = :flight_number',
+         { flight_number: flight_number.toLowerCase() }
+      );
    }
 
    if (flight_iata) {
@@ -64,15 +65,17 @@ export async function getFlightsFromDb(query: FlightQueryParams) {
    }
 
    if (dep_iata) {
-      qb.andWhere('LOWER(flight.dep_iata) = :dep_iata', {
-         dep_iata: dep_iata.toLowerCase()
-      });
+      qb.andWhere(
+         'LOWER(JSON_UNQUOTE(JSON_EXTRACT(flight.departure, "$.iata"))) = :dep_iata',
+         { dep_iata: dep_iata.toLowerCase() }
+      );
    }
 
    if (arr_iata) {
-      qb.andWhere('LOWER(flight.arr_iata) = :arr_iata', {
-         arr_iata: arr_iata.toLowerCase()
-      });
+      qb.andWhere(
+         'LOWER(JSON_UNQUOTE(JSON_EXTRACT(flight.arrival, "$.iata"))) = :arr_iata',
+         { arr_iata: arr_iata.toLowerCase() }
+      );
    }
 
    if (dep_icao) {
@@ -140,6 +143,8 @@ export async function getFlightsFromDb(query: FlightQueryParams) {
          arr_scheduled_time_dep
       });
    }
+
+   qb.orderBy('flight.id', 'DESC');
 
    qb.skip(Number(offset)).take(Number(limit));
 

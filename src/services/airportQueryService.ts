@@ -26,6 +26,7 @@ export async function getAirportsFromDb(query: AirportQueryParams) {
          .orWhere('LOWER(airport.country_name) LIKE :like', { like });
    }
 
+   qb.orderBy('airport.id', 'DESC');
    qb.skip(Number(offset)).take(Number(limit));
 
    const [data, total] = await qb.getManyAndCount();

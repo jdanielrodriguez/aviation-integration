@@ -1,5 +1,6 @@
 import { mailer } from '../app';
 import logger from '../config/logger';
+import { config } from '../config/api';
 
 export async function sendAdminEmail(subject: string, message: string) {
    if (!mailer) {
@@ -9,8 +10,8 @@ export async function sendAdminEmail(subject: string, message: string) {
 
    try {
       await mailer.sendMail({
-         from: 'alertas@aviation.com',
-         to: 'admin@aviation.com',
+         from: config.MAIL.FROM,
+         to: config.MAIL.TO,
          subject,
          text: message,
       });
