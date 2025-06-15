@@ -15,11 +15,7 @@ export const AppDataSource = new DataSource({
    entities: [Airport, Flight, ApiCall],
    synchronize: false,
    logging: false,
-   migrations: [
-      (config.NODE_ENV === 'production' || config.NODE_ENV === 'test')
-         ? 'dist/migrations/*.js'
-         : 'src/migrations/*.ts'
-   ],
+   migrations: ['dist/migrations/*.js'],
 });
 
 export const initializeDatabase = async () => {
