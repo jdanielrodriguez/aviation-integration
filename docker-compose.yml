@@ -4,17 +4,13 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      args:
-        NODE_ENV: development
     environment:
-      - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - FAST_REFRESH=true
     volumes:
       - ./:/app:delegated
     ports:
-      - "3000:3000"
       - "8080:8080"
     depends_on:
       aviation_db:

@@ -26,6 +26,14 @@ init: network-create
 	docker compose -f docker-compose.yml build
 	docker compose -f docker-compose.yml up -d
 
+.PHONY: init-test
+init-test: network-create
+	@echo "Inicializando entorno (red, volúmenes y servicios para test)..."
+	docker volume inspect aviation_db_data >/dev/null 2>&1 || docker volume create aviation_db_data
+	docker volume inspect aviation_redis_data >/dev/null 2>&1 || docker volume create aviation_redis_data
+	docker compose -f docker-compose.yml -f docker-compose.test.yml build
+	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
+
 .PHONY: rebuild-dev
 rebuild-dev:
 	@echo "Reconstruyendo servicios de desarrollo..."

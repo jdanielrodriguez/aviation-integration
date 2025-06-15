@@ -1,51 +1,101 @@
 import { Router } from 'express';
-import { getAirlines } from '../controllers/airportController';
-import { airlinesQuerySchema, validateQuery } from '../utils/airlineValidator';
+import { getAirportsController } from '../controllers/airportController';
+import { validateAirportQuery } from '../utils/airportValidator';
 
 const router = Router();
 
-router.get(
-   '/',
-   validateQuery(airlinesQuerySchema),
-   getAirlines
-);
+router.get('/', validateAirportQuery, getAirportsController);
 
 /**
  * @swagger
- * /api/v1/airlines:
+ * /api/v1/airports:
  *   get:
- *     summary: Obtiene una lista de aerolíneas (con búsqueda opcional)
- *     description: Retorna aerolíneas, filtradas opcionalmente por el parámetro de búsqueda.
+ *     summary: Obtiene una lista de aeropuertos con búsqueda opcional
+ *     description: Retorna aeropuertos, filtrados opcionalmente por nombre, código IATA, ciudad o país.
  *     tags:
- *       - Airlines
+ *       - Airports
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
  *           minLength: 2
- *           maxLength: 50
+ *           maxLength: 100
  *         required: false
- *         description: Palabra clave para buscar aerolíneas por nombre.
+ *         description: Texto para buscar por nombre, IATA, ciudad o país
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 1000
+ *         required: false
+ *         description: Cantidad máxima de resultados
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *         required: false
+ *         description: Desplazamiento de resultados para paginación
  *     responses:
  *       200:
- *         description: Lista de aerolíneas encontrada
+ *         description: Lista de aeropuertos encontrada
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   iata_code:
- *                     type: string
- *                     example: "AA"
- *                   name:
- *                     type: string
- *                     example: "American Airlines"
- *                   country:
- *                     type: string
- *                     example: "United States"
+ *               type: object
+ *               properties:
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     limit:
+ *                       type: integer
+ *                       example: 100
+ *                     offset:
+ *                       type: integer
+ *                       example: 0
+ *                     count:
+ *                       type: integer
+ *                       example: 100
+ *                     total:
+ *                       type: integer
+ *                       example: 6471
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       airport_name:
+ *                         type: string
+ *                         example: "Quetzaltenango"
+ *                       iata_code:
+ *                         type: string
+ *                         example: "AAZ"
+ *                       icao_code:
+ *                         type: string
+ *                         example: "MGQZ"
+ *                       latitude:
+ *                         type: string
+ *                         example: "14.870000"
+ *                       longitude:
+ *                         type: string
+ *                         example: "-91.500000"
+ *                       timezone:
+ *                         type: string
+ *                         example: "America/Guatemala"
+ *                       gmt:
+ *                         type: string
+ *                         example: "-6"
+ *                       country_name:
+ *                         type: string
+ *                         example: "Guatemala"
+ *                       country_iso2:
+ *                         type: string
+ *                         example: "GT"
+ *                       city_iata_code:
+ *                         type: string
+ *                         example: "AAZ"
  *       422:
  *         description: Error de validación en los parámetros
  *         content:
@@ -62,7 +112,7 @@ router.get(
  *                     status:
  *                       type: number
  *                       example: 422
- *                     details:
+ *                     errors:
  *                       type: array
  *                       items:
  *                         type: object

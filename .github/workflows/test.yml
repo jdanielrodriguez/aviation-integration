@@ -29,6 +29,7 @@ jobs:
           NODE_ENV=test
           PORT=8080
           AVIATIONSTACK_KEY=${{ secrets.AVIATIONSTACK_KEY }}
+          AVIATIONSTACK_URL=https://api.aviationstack.com/v1
           MYSQL_HOST=aviation_db
           MYSQL_PORT=3306
           MYSQL_USER=aviation
@@ -38,17 +39,19 @@ jobs:
           REDIS_PORT=6379
           MAIL_HOST=aviation_mailhog
           MAIL_PORT=1025
+          MAIL_FROM=alertas@tudominio.com
+          MAIL_TO=admin@tudominio.com
           EOF
 
       - name: Limpiar volúmenes MySQL
         run: docker volume rm aviation_db_data || true && docker volume ls
 
       - name: Levantar stack de desarrollo con Makefile
-        run: make init
+        run: make init-test
 
       - name: Esperar healthcheck aviation_node
         run: |
-          for i in {1..60}; do
+          for i in {1..90}; do
             health=$(docker inspect --format='{{.State.Health.Status}}' aviation_node)
             if [ "$health" = "healthy" ]; then
               echo "Node API healthy"

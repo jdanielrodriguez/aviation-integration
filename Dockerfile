@@ -8,10 +8,7 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-RUN if [ "$NODE_ENV" = "production" ]; then npm run build ; fi
+RUN npm run build
 
 EXPOSE 8080
 
