@@ -15,13 +15,19 @@ export const AppDataSource = new DataSource({
    entities: [Airport, Flight, ApiCall],
    synchronize: false,
    logging: false,
-   migrations: ['src/migrations/*.ts'],
+   migrations: [
+      config.NODE_ENV === 'production'
+         ? 'dist/migrations/*.js'
+         : 'src/migrations/*.ts'
+   ],
 });
 
 export const initializeDatabase = async () => {
    try {
       await AppDataSource.initialize();
       logger.info('Base de Datos MySQL inicializada correctamente');
+      const migrations = await AppDataSource.runMigrations();
+      logger.info(`Migraciones ejecutadas: ${migrations.map(m => m.name).join(', ')}`);
    } catch (err) {
       logger.error('Error initializando la base de datos:', err);
       throw err;
