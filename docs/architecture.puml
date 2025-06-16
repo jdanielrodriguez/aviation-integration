@@ -1,0 +1,47 @@
+@startuml ArchitectureOverview
+
+' Title
+title Aviation Integration Service - Architecture Overview
+
+!define AWSPUML https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v14.0/Advanced/AWSCommon.puml
+
+actor User
+
+node "API (Express + Node.js)" as API {
+   [app.ts]
+   [Controllers]
+   [Middleware]
+   [Routes]
+   [Swagger UI]
+}
+
+database "MySQL" as DB {
+   [api_calls]
+   [airports]
+   [flights]
+   [airlines]
+}
+
+cloud "Redis" as Redis
+
+cloud "AviationStack API" as AviationStack
+
+frame "Mail Service (Mailhog / Gmail)" as Mailer
+
+User --> API : HTTP(S) Requests
+API --> DB : TypeORM (read/write)
+API --> Redis : cache (read/write)
+API --> AviationStack : HTTP(S) (sync data)
+API --> Mailer : Error notifications
+Redis --> API : cache hits (read)
+DB --> API : data queries
+API --> User : JSON responses
+
+note right of API
+   - Express + TypeScript
+   - Dependency Injection
+   - Error & Request Logging
+   - Swagger for API docs
+end note
+
+@enduml

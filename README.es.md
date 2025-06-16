@@ -143,7 +143,9 @@ make test
 ## Arquitectura y diagramas
 
 - Diagrama de flujo de datos:  
-  [/data-flow.es.puml](data-flow.es.puml)
+  [docs/data-flow.es.puml](docs/data-flow.es.puml)
+- Diagrama de arquitectura:  
+  [docs/architecture.es.puml](docs/architecture.es.puml)
 
 ---
 
