@@ -3,6 +3,7 @@ import { config } from './api';
 import { Airport } from '../models/airport';
 import { ApiCall } from '../models/apiCall';
 import { Flight } from '../models/flight';
+import { Airline } from '../models/airline';
 import logger from './../config/logger';
 
 export const AppDataSource = new DataSource({
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
    username: config.MYSQL.USER,
    password: config.MYSQL.PASSWORD,
    database: config.MYSQL.DATABASE,
-   entities: [Airport, Flight, ApiCall],
+   entities: [Airport, Flight, ApiCall, Airline],
    synchronize: false,
    logging: false,
    migrations: ['dist/migrations/*.js'],

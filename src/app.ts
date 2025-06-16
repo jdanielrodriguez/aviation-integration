@@ -14,6 +14,7 @@ import { errorHandler } from './middleware/errorHandler';
 import airportRoutes from './routes/airportRoutes';
 import flightRoutes from './routes/flightRoutes';
 import healthRoutes from './routes/healthRoutes';
+import airlineRoutes from './routes/airlineRoutes';
 import swaggerSpec from './config/swagger';
 import { config } from './config/api';
 import logger from './config/logger';;
@@ -110,6 +111,7 @@ export { mailer };
 app.use('/api/health', healthRoutes);
 app.use('/api/v1/airports', airportRoutes);
 app.use('/api/v1/flights', flightRoutes);
+app.use('/api/v1/airlines', airlineRoutes);
 app.get('/api/test-error', (_req, _res) => {
    throw new Error('Test error');
 });
