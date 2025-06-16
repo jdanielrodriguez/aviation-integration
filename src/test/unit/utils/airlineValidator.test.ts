@@ -67,7 +67,7 @@ describe('airlineValidator', () => {
    });
 
    it('should call next() with error object if validation fails', () => {
-      const req: any = { query: { search: 'a' } }; // search muy corto
+      const req: any = { query: { search: 'a' } };
       const res: any = {};
       const next = jest.fn();
 
@@ -78,7 +78,6 @@ describe('airlineValidator', () => {
          message: 'Validation error',
          errors: expect.any(Array)
       }));
-      // También puedes checar el mensaje del error:
       expect(next.mock.calls[0][0].errors[0].msg).toMatch(/length must be at least 2/);
    });
 
@@ -89,6 +88,6 @@ describe('airlineValidator', () => {
 
       validateAirlineQuery(req, res, next);
 
-      expect(next).toHaveBeenCalledWith(); // next() sin argumentos
+      expect(next).toHaveBeenCalledWith();
    });
 });

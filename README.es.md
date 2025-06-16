@@ -56,9 +56,9 @@ Puedes probar la API desplegada en Cloud Run aquí:
 - Swagger UI: [/docs](https://aviation-integration-944235041157.us-central1.run.app/docs)
 - Ejemplo vuelos: [/api/v1/flights?dep_iata=GUA](https://aviation-integration-944235041157.us-central1.run.app/api/v1/flights?dep_iata=GUA)
 - Ejemplo aeropuertos: [/api/v1/airports?search=guatemala](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airports?search=guatemala)
+- Ejemplo Airlines: [/api/v1/airlines?search=VX](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airlines?search=VX)
 
 ---
-
 
 ## Comandos rápidos
 
@@ -95,12 +95,13 @@ Consulta `.env.example` para la configuración necesaria.
 
 ## Documentación de la API
 
-- Swagger UI: [http://localhost:8080/docs](http://localhost:8080/docs)
+- Swagger UI: [https://aviation-integration-944235041157.us-central1.run.app/docs](https://aviation-integration-944235041157.us-central1.run.app/docs)
 - [docs/API.es.md](docs/API.es.md) — Resumen de endpoints, parámetros y ejemplos
 - Endpoints principales:
 
 | Método | Ruta             | Descripción                              |
 | ------ | ---------------- | ---------------------------------------- |
+| GET    | /api/v1/airlines | Lista de aerolineas con search local     |
 | GET    | /api/v1/airports | Lista de aeropuertos con search local    |
 | GET    | /api/v1/flights  | Búsqueda de vuelos con múltiples filtros |
 | GET    | /api/health      | Verificar estado de los servicios        |
@@ -110,7 +111,7 @@ Consulta `.env.example` para la configuración necesaria.
 ## Validación de parámetros
 
 Todos los parámetros de consulta son validados con **Joi**, y errores de validación devuelven HTTP 422.  
-Ver en `src/utils/airportValidator.ts` y `src/utils/flightsValidator.ts`.
+Ver en `src/utils/airportValidator.ts`, `src/utils/flightsValidator.ts` y `src/utils/airlineValidator.ts`.
 
 ---
 
@@ -142,7 +143,7 @@ make test
 ## Arquitectura y diagramas
 
 - Diagrama de flujo de datos:  
-  [docs/data-flow.puml](data-flow.puml)
+  [/data-flow.es.puml](data-flow.es.puml)
 
 ---
 

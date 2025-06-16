@@ -39,7 +39,7 @@ export async function setCache(key: string, data: any, ttl: number = 90) {
    await redisClient.setEx(key, ttl, JSON.stringify(data));
 }
 
-export async function fetch(endpoint: string, params: any) {
+export async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryParams | AirlineQueryParams) {
    const queryStr = new URLSearchParams(
       Object.fromEntries(
          Object.entries({ access_key: config.AVIATIONSTACK_KEY, ...params }).filter(
@@ -173,7 +173,7 @@ export async function syncAirlinesIfNeeded() {
          iata_prefix_accounting: item.iata_prefix_accounting,
          country_name: item.country_name,
          country_iso2: item.country_iso2,
-      }, ['iata_code']); // usa el campo que sea más único
+      }, ['iata_code']);
    }
 }
 
@@ -197,5 +197,4 @@ export async function logApiCall(
 export const getFlights = (params: FlightQueryParams) => fetch('flights', params);
 export const getAirports = (params: AirportQueryParams) => fetch('airports', params);
 export const getAirlines = (params: AirlineQueryParams) => fetch('airlines', params);
-
 

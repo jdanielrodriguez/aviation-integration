@@ -132,7 +132,7 @@ describe('config/api.ts', () => {
 
       require('../../../app');
       expect(quitMock).toHaveBeenCalled();
-      process.env.NODE_ENV = 'test'; // Restore (por si acaso)
+      process.env.NODE_ENV = 'test';
    });
 
    it('should call mailer.verify for SMTP', () => {

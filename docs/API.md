@@ -46,6 +46,55 @@ https://aviation-integration-944235041157.us-central1.run.app/
 
 ---
 
+### 🏢 Airlines
+
+- **GET** `/api/v1/airlines`
+- **Description:** List of airlines (persisted locally after the first call).
+- **Parameters:**
+
+  - `search` (string, optional): Text to search by airline name, IATA code, or country.
+  - `limit` (int, optional): Maximum number of results to return (default 20, max 1000).
+  - `offset` (int, optional): Offset for pagination.
+
+- **Usage example:**  
+  `/api/v1/airlines?search=american&limit=10&offset=0`
+
+- **Successful response:**
+
+```json
+{
+  "pagination": {
+    "limit": 10,
+    "offset": 0,
+    "count": 1,
+    "total": 1
+  },
+  "data": [
+    {
+      "id": 1,
+      "airline_name": "American Airlines",
+      "iata_code": "AA",
+      "icao_code": "AAL",
+      "callsign": "AMERICAN",
+      "type": "scheduled",
+      "status": "active",
+      "fleet_size": "963",
+      "fleet_average_age": "10.9",
+      "date_founded": "1934",
+      "hub_code": "DFW",
+      "iata_prefix_accounting": "1",
+      "country_name": "United States",
+      "country_iso2": "US"
+    }
+  ]
+}
+```
+
+- **Errors:**
+  - `422` → Validation error in parameters
+
+---
+
 ### ✈️ Airports
 
 - **GET** `/api/v1/airports`

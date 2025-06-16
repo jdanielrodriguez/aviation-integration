@@ -97,6 +97,10 @@ Antes de enviar un PR, asegúrate de:
 - Los PRs serán revisados por al menos un colaborador.
 - **No se aceptan cambios sin justificación** clara o sin pruebas automáticas (si aplica).
 - Si tu cambio rompe los tests, se rechazará hasta corregirlo.
+- Si agregas un endpoint nuevo (ej: `/api/v1/airlines`), **debes** incluir:
+  - Pruebas unitarias para los nuevos controladores y servicios
+  - Pruebas de integración para el endpoint nuevo
+  - Actualizaciones de documentación en `README.md` y `docs/API.md`
 
 ---
 
