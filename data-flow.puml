@@ -32,4 +32,20 @@ group Endpoint: /api/v1/airports
    AirportController -> AviationStackService : logApiCall
    AirportController -> API : Respond with airport data
 end group
+group Endpoint: /api/v1/airlines
+   User -> API : GET /api/v1/airlines
+   API -> AirlineController : getAirlinesController
+   AirlineController -> AviationStackService : syncAirlinesIfNeeded()
+   alt Not synchronized today
+      AviationStackService -> Redis : Check cache
+      AviationStackService -> AviationStack : Call external API
+      AviationStackService -> MySQL : Insert/update airlines
+      AviationStackService -> Redis : Store in cache
+      AviationStackService -> Mailer : Notify if failure
+   end
+   AirlineController -> AirlineQueryService : getAirlinesFromDb()
+   AirlineQueryService -> MySQL : Query with search and pagination
+   AirlineController -> AviationStackService : logApiCall
+   AirlineController -> API : Respond with airline data
+end group
 @enduml

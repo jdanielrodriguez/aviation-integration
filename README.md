@@ -56,6 +56,7 @@ You can try the API deployed on Cloud Run here:
 - Swagger UI: [/docs](https://aviation-integration-944235041157.us-central1.run.app/docs)
 - Flights example: [/api/v1/flights?dep_iata=GUA](https://aviation-integration-944235041157.us-central1.run.app/api/v1/flights?dep_iata=GUA)
 - Airports example: [/api/v1/airports?search=guatemala](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airports?search=guatemala)
+- Airlines example: [/api/v1/airlines?search=VX](https://aviation-integration-944235041157.us-central1.run.app/api/v1/airlines?search=VX)
 
 ---
 
@@ -94,12 +95,13 @@ See `.env.example` for the necessary configuration.
 
 ## API Documentation
 
-- Swagger UI: [http://localhost:8080/docs](http://localhost:8080/docs)
+- Swagger UI: [https://aviation-integration-944235041157.us-central1.run.app/docs](https://aviation-integration-944235041157.us-central1.run.app/docs)
 - [docs/API.md](docs/API.md) — English version with endpoints summary, parameters and examples
 - Main endpoints:
 
 | Method | Path             | Description                         |
 | ------ | ---------------- | ----------------------------------- |
+| GET    | /api/v1/airlines | List of airlines with local search  |
 | GET    | /api/v1/airports | List of airports with local search  |
 | GET    | /api/v1/flights  | Flight search with multiple filters |
 | GET    | /api/health      | Check the status of all services    |
@@ -109,7 +111,7 @@ See `.env.example` for the necessary configuration.
 ## Parameter Validation
 
 All query parameters are validated with **Joi**, and validation errors return HTTP 422.  
-See `src/utils/airportValidator.ts` and `src/utils/flightsValidator.ts`.
+See `src/utils/airportValidator.ts`, `src/utils/flightsValidator.ts` y `src/utils/airlineValidator.ts`.
 
 ---
 
@@ -141,7 +143,7 @@ make test
 ## Architecture and Diagrams
 
 - Data flow diagram:  
-  [docs/data-flow.puml](data-flow.puml)
+  [/data-flow.puml](data-flow.puml)
 
 ---
 

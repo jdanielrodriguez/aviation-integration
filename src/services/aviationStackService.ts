@@ -6,11 +6,13 @@ import { config, isTestEnv } from '../config/api';
 import { AppDataSource } from '../config/database';
 import { AirportQueryParams } from '../types/airport';
 import { FlightQueryParams } from '../types/flight';
+import { AirlineQueryParams } from '../types/airline';
 import { sendAdminEmail } from '../utils/emailSender';
 import { ApiCall } from '../models/apiCall';
+import { Airline } from '../models/airline';
 import { Airport } from '../models/airport';
 import { Flight } from '../models/flight';
-import { MOCK_FLIGHTS } from '../test/mocks/aviationData';
+import { MOCK_FLIGHTS, MOCK_AIRPORTS, MOCK_AIRLINES } from '../test/mocks/aviationData';
 
 export async function hasSyncedToday(endpoint: string): Promise<boolean> {
    const repo = AppDataSource.getRepository(ApiCall);
@@ -37,7 +39,7 @@ export async function setCache(key: string, data: any, ttl: number = 90) {
    await redisClient.setEx(key, ttl, JSON.stringify(data));
 }
 
-export async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryParams) {
+export async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryParams | AirlineQueryParams) {
    const queryStr = new URLSearchParams(
       Object.fromEntries(
          Object.entries({ access_key: config.AVIATIONSTACK_KEY, ...params }).filter(
@@ -56,9 +58,14 @@ export async function fetch(endpoint: string, params: FlightQueryParams | Airpor
 
    if (isTestEnv) {
       logger.debug(`[TEST] Returning mocked data for ${endpoint}`);
+      let data: string | any[];
+      if (endpoint === 'flights') data = MOCK_FLIGHTS;
+      else if (endpoint === 'airports') data = MOCK_AIRPORTS;
+      else if (endpoint === 'airlines') data = MOCK_AIRLINES;
+      else data = [];
       return {
-         data: MOCK_FLIGHTS,
-         pagination: { count: 1, total: 1, limit: 100, offset: 0 }
+         data,
+         pagination: { count: data.length, total: data.length, limit: 100, offset: 0 }
       };
    }
 
@@ -142,6 +149,34 @@ export async function syncFlightsIfNeeded() {
    }
 }
 
+export async function syncAirlinesIfNeeded() {
+   if (isTestEnv) return;
+   const alreadySynced = await hasSyncedToday('airlines');
+   if (alreadySynced) return;
+
+   const { data } = await getAirlines({});
+
+   const repo = AppDataSource.getRepository(Airline);
+
+   for (const item of data) {
+      await repo.upsert({
+         airline_name: item.airline_name,
+         iata_code: item.iata_code,
+         icao_code: item.icao_code,
+         callsign: item.callsign,
+         type: item.type,
+         status: item.status,
+         fleet_size: item.fleet_size,
+         fleet_average_age: item.fleet_average_age,
+         date_founded: item.date_founded,
+         hub_code: item.hub_code,
+         iata_prefix_accounting: item.iata_prefix_accounting,
+         country_name: item.country_name,
+         country_iso2: item.country_iso2,
+      }, ['iata_code']);
+   }
+}
+
 export async function logApiCall(
    endpoint: string,
    params: FlightQueryParams | AirportQueryParams,
@@ -161,4 +196,5 @@ export async function logApiCall(
 
 export const getFlights = (params: FlightQueryParams) => fetch('flights', params);
 export const getAirports = (params: AirportQueryParams) => fetch('airports', params);
+export const getAirlines = (params: AirlineQueryParams) => fetch('airlines', params);
 
