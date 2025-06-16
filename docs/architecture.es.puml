@@ -1,0 +1,45 @@
+@startuml VistaArquitectura
+
+' Título
+title Arquitectura General - Aviation Integration Service
+
+actor Usuario
+
+node "API (Express + Node.js)" as API {
+   [app.ts]
+   [Controladores]
+   [Middlewares]
+   [Rutas]
+   [Swagger UI]
+}
+
+database "MySQL" as DB {
+   [api_calls]
+   [airports]
+   [flights]
+   [airlines]
+}
+
+cloud "Redis" as Redis
+
+cloud "AviationStack API" as AviationStack
+
+frame "Servicio de Correo (Mailhog / Gmail)" as Mailer
+
+Usuario --> API : Solicitudes HTTP(S)
+API --> DB : TypeORM (lectura/escritura)
+API --> Redis : caché (lectura/escritura)
+API --> AviationStack : HTTP(S) (sincronización de datos)
+API --> Mailer : Notificación de errores
+Redis --> API : caché hits (lectura)
+DB --> API : consultas de datos
+API --> Usuario : Respuestas JSON
+
+note right of API
+   - Express + TypeScript
+   - Inyección de dependencias
+   - Logging de errores y requests
+   - Swagger para documentación API
+end note
+
+@enduml

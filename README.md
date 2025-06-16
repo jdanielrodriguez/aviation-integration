@@ -143,7 +143,9 @@ make test
 ## Architecture and Diagrams
 
 - Data flow diagram:  
-  [/data-flow.puml](data-flow.puml)
+  [docs/data-flow.puml](docs/data-flow.puml)
+- Architecture diagram:  
+  [docs/architecture.puml](docs/architecture.puml)
 
 ---
 
