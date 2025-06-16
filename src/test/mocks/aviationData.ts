@@ -23,3 +23,21 @@ export const MOCK_AIRPORTS = [
       city_iata_code: 'AAZ'
    }
 ];
+
+export const MOCK_AIRLINES = [
+   {
+      airline_name: "Mock Airline",
+      iata_code: "MA",
+      icao_code: "MCK",
+      callsign: "MOCKAIR",
+      type: "scheduled",
+      status: "active",
+      fleet_size: "10",
+      fleet_average_age: "5",
+      date_founded: "2020",
+      hub_code: "MCK",
+      iata_prefix_accounting: "999",
+      country_name: "Mockland",
+      country_iso2: "MK"
+   }
+];

@@ -12,7 +12,7 @@ import { ApiCall } from '../models/apiCall';
 import { Airline } from '../models/airline';
 import { Airport } from '../models/airport';
 import { Flight } from '../models/flight';
-import { MOCK_FLIGHTS } from '../test/mocks/aviationData';
+import { MOCK_FLIGHTS, MOCK_AIRPORTS, MOCK_AIRLINES } from '../test/mocks/aviationData';
 
 export async function hasSyncedToday(endpoint: string): Promise<boolean> {
    const repo = AppDataSource.getRepository(ApiCall);
@@ -39,7 +39,7 @@ export async function setCache(key: string, data: any, ttl: number = 90) {
    await redisClient.setEx(key, ttl, JSON.stringify(data));
 }
 
-export async function fetch(endpoint: string, params: FlightQueryParams | AirportQueryParams) {
+export async function fetch(endpoint: string, params: any) {
    const queryStr = new URLSearchParams(
       Object.fromEntries(
          Object.entries({ access_key: config.AVIATIONSTACK_KEY, ...params }).filter(
@@ -58,9 +58,14 @@ export async function fetch(endpoint: string, params: FlightQueryParams | Airpor
 
    if (isTestEnv) {
       logger.debug(`[TEST] Returning mocked data for ${endpoint}`);
+      let data: string | any[];
+      if (endpoint === 'flights') data = MOCK_FLIGHTS;
+      else if (endpoint === 'airports') data = MOCK_AIRPORTS;
+      else if (endpoint === 'airlines') data = MOCK_AIRLINES;
+      else data = [];
       return {
-         data: MOCK_FLIGHTS,
-         pagination: { count: 1, total: 1, limit: 100, offset: 0 }
+         data,
+         pagination: { count: data.length, total: data.length, limit: 100, offset: 0 }
       };
    }
 
@@ -192,4 +197,5 @@ export async function logApiCall(
 export const getFlights = (params: FlightQueryParams) => fetch('flights', params);
 export const getAirports = (params: AirportQueryParams) => fetch('airports', params);
 export const getAirlines = (params: AirlineQueryParams) => fetch('airlines', params);
+
 

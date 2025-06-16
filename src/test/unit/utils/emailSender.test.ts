@@ -98,4 +98,82 @@ describe('emailSender', () => {
       expect(mailer).toBeNull();
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Mailer not initialized'));
    });
+
+   it('should log error if Mailhog/SMTP verification fails', () => {
+      jest.resetModules();
+
+      jest.doMock('../../../config/api', () => ({
+         config: {
+            NODE_ENV: 'development',
+            MAIL: {
+               HOST: 'localhost',
+               PORT: 1025,
+            },
+            REDIS: {
+               HOST: 'localhost',
+               PORT: 6379,
+               PASSWORD: '',
+            },
+            MYSQL: {
+               HOST: 'localhost',
+               PORT: 3306,
+               USER: 'test',
+               PASSWORD: 'test',
+               DATABASE: 'test',
+            }
+         }
+      }));
+
+      jest.doMock('nodemailer', () => ({
+         createTransport: jest.fn(() => ({
+            verify: jest.fn(cb => cb && cb(new Error('fail mailhog'))),
+            sendMail: jest.fn(),
+         })),
+      }));
+
+      const logger = require('../../../config/logger');
+      const errorSpy = jest.spyOn(logger, 'error');
+      require('../../../app');
+
+      expect(errorSpy).toHaveBeenCalledWith('Error verifying Mailhog/SMTP:', expect.any(Error));
+   });
+   it('should log error if Gmail SMTP verification fails', () => {
+      jest.resetModules();
+
+      jest.doMock('../../../config/api', () => ({
+         config: {
+            NODE_ENV: 'production',
+            MAIL: {
+               USER: 'gmail_user',
+               PASSWORD: 'gmail_pass',
+            },
+            REDIS: {
+               HOST: 'localhost',
+               PORT: 6379,
+               PASSWORD: '',
+            },
+            MYSQL: {
+               HOST: 'localhost',
+               PORT: 3306,
+               USER: 'test',
+               PASSWORD: 'test',
+               DATABASE: 'test',
+            }
+         }
+      }));
+
+      jest.doMock('nodemailer', () => ({
+         createTransport: jest.fn(() => ({
+            verify: jest.fn(cb => cb && cb(new Error('fail gmail'))),
+            sendMail: jest.fn(),
+         })),
+      }));
+
+      const logger = require('../../../config/logger');
+      const errorSpy = jest.spyOn(logger, 'error');
+      require('../../../app');
+
+      expect(errorSpy).toHaveBeenCalledWith('Error verifying Gmail SMTP:', expect.any(Error));
+   });
+
 });

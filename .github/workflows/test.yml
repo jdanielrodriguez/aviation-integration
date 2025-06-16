@@ -39,8 +39,8 @@ jobs:
           REDIS_PORT=6379
           MAIL_HOST=aviation_mailhog
           MAIL_PORT=1025
-          MAIL_FROM=alertas@tudominio.com
-          MAIL_TO=admin@tudominio.com
+          MAIL_FROM=alertas@aviation.com
+          MAIL_TO=admin@aviation.com
           EOF
 
       - name: Clean MySQL volumes
