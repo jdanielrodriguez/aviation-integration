@@ -280,4 +280,25 @@ describe('aviationStackService - getFlights() (unit)', () => {
       expect(infoSpy).toHaveBeenCalledWith('Redis connected');
       expect(errorSpy).toHaveBeenCalledWith('Redis error:', expect.any(Error));
    });
+
+   it('should return mocked airlines in test env', async () => {
+      process.env.NODE_ENV = 'test';
+      jest.resetModules();
+      const { redisClient } = require('../../../app');
+      redisClient.get = jest.fn().mockResolvedValueOnce(null);
+      const { getAirlines } = require('../../../services/aviationStackService');
+      const res = await getAirlines({});
+      expect(res.data).toEqual(expect.arrayContaining([expect.objectContaining({ airline_name: expect.any(String) })]));
+   });
+
+   it('should return empty array for unknown endpoint in test env', async () => {
+      process.env.NODE_ENV = 'test';
+      jest.resetModules();
+      const { redisClient } = require('../../../app');
+      redisClient.get = jest.fn().mockResolvedValueOnce(null);
+      const { fetch } = require('../../../services/aviationStackService');
+      const res = await fetch('unknown', {});
+      expect(res.data).toEqual([]);
+      expect(res.pagination).toEqual({ count: 0, total: 0, limit: 100, offset: 0 });
+   });
 });

@@ -97,6 +97,10 @@ Before submitting a PR, make sure to:
 - PRs will be reviewed by at least one collaborator.
 - **No changes will be accepted without clear justification or without automated tests (if applicable).**
 - If your change breaks the tests, it will be rejected until fixed.
+- If you add new endpoints (e.g. `/api/v1/airlines`), you **must** include:
+  - Unit tests for the new controllers/services
+  - Integration tests for the new endpoints
+  - Documentation updates in `README.md` and `docs/API.md`
 
 ---
 
